@@ -1,0 +1,26 @@
+# Secretos
+.env
+.env.local
+.env.*.local
+
+# Dependencias
+api/vendor/
+node_modules/
+
+# Binarios
+api/composer.phar
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+
+# Material de diseño descartado
+original/
+stich/
+tailwind-script.html
+.vscode/
+
+# Logs y errores de PHP
+*.log

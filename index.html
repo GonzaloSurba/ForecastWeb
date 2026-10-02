@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherApp</title>
+    <link rel="shortcut icon" href="assets/img/weather_logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="assets/css/estilo.css">
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script defer type="module" src="assets/js/miscript.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="header-menu">
+                <div class="header-logo">
+                    <img src="assets/img/weather_logo.png" alt="Logo de WeatherApp">
+                    <span class="headline-sm">WeatherApp</span>
+                </div>
+                <nav>
+                    <a href="#" class="label-md">Pronóstico</a>
+                    <a href="#" class="label-md">Radares y satélites</a>
+                    <a href="#" class="label-md">Mapa de viento</a>
+                    <a href="#" class="label-md">Histórico</a>
+                </nav>
+            </div>
+            <div class="header-hora">
+                <i class="bi bi-clock"></i>
+                <time datetime="12:00" class="label-caps">12:00</time>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <section class="buscador-section">
+            <div class="buscador-container">
+                <div class="buscador-input-container">
+                    <div class="buscador-input">
+                        <i class="bi bi-search"></i>
+                        <input type="text" name="municipio" id="municipio" class="body-lg" placeholder="Introduce el nombre de un municipio o su código postal">
+                        <button class="buscador-x-button">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                        <button class="buscador-ubicacion-button">
+                            <i class="bi bi-crosshair"></i>
+                            <span>Usar mi ubicación</span>
+                        </button>
+                        <button class="buscador-arrow-button" id="buscar-municipio">
+                            <i class="bi bi-arrow-right-short"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="buscador-frecuentes">
+                    <span class="label-caps">Frecuentes:</span>
+                    <button>Bienvenida</button>
+                    <button>Zafra</button>
+                    <button>Badajoz</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="aviso-tiempo-hoy-section">
+            <div class="container aviso-tiempo-hoy-container">
+                <p class="body-md">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <strong class="label-lg">Aviso meteorológico: </strong>
+                    Cielo con nubosidad alta variable. Ventilación favorable en el cuadrante suroeste.
+                </p>
+                <div class="aviso-ica">
+                    <p class="label-caps">
+                        <span class="punto"></span>
+                        ICA 24 • Calidad Óptima
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="tiempo-actual-section">
+            <div class="container">
+                <div class="tiempo-actual-card">
+
+                    <div class="ambient-glow glow-primary"></div>
+                    <div class="ambient-glow glow-secondary"></div>
+
+                    <div class="tiempo-actual-content">
+                        <div class="tiempo-actual-primary-col">
+                        
+                            <!-- Badges -->
+                            <div class="badge-group">
+                                <div class="badge badge-surface label-md">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span class="font-semibold" id="nombreMunicipio">Bienvenida, ES</span>
+                                    <span class="badge-tag" id="nombreProvincia">Badajoz, Extremadura</span>
+                                </div>
+                                <div class="badge badge-surface-subtle label-md">
+                                    <i class="bi bi-clock-history"></i>
+                                    <span id="ultimaActualizacion">Actualizado hace 4 min (14:28)</span>
+                                </div>
+                            </div>
+
+                            <!-- Temperatura y Clima principal -->
+                            <div class="temp-row">
+                                <div class="temp-display">
+                                    <span class="temp-val temperaturaActual">31</span>
+                                    <span class="temp-unit headline-lg" id="tempUnitSymbol">°C</span>
+                                </div>
+
+                                <div class="condition-art">
+                                    <div class="img-container">
+                                        <img id="iconoClimaActual" 
+                                            src="https://www.aemet.es/imagenes/png/estado_cielo/13_g.png"
+                                            alt="Estado del cielo">
+                                    </div>
+
+                                    <div class="condition-info">
+                                        <h2 class="headline-lg" id="descripcionClimaActual">Nubes dispersas</h2>
+                                        <span class="body-sm">Datos proporcionados por AEMET y OpenWeather</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pills meta -->
+                            <div class="pill-group label-md">
+                                <span class="pill pill-surface">
+                                <i class="bi bi-check-circle"></i>
+                                Condición estable
+                                </span>
+                                <span class="pill pill-warning">
+                                <i class="bi bi-sun"></i>
+                                Índice UV 6 (Moderado)
+                                </span>
+                                <span class="pill pill-surface">
+                                <i class="bi bi-wind"></i>
+                                Viento: <span class="descripcionViento">Brisa agradable</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Columna Radar -->
+                        <div class="tiempo-actual-radar-col">
+                            <div class="radar-card">
+                                <div class="radar-header">
+                                    <div class="radar-title">
+                                        <i class="bi bi-radar"></i>
+                                        <span class="label-lg font-semibold">Radar</span>
+                                    </div>
+                                </div>
+
+                                <div class="radar-image-wrapper">
+                                    <div id="mapa-radar" style="width: 100%; height: 100%;"></div>
+                                </div>
+
+                                <div class="radar-footer body-sm">
+                                    <span>Lat: <span id="radar-lat">38.293</span>° N • Lon: <span id="radar-lon">-6.211</span>° W</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="metricas-section">
+            <div class="container">
+                <div class="section-title">
+                    <h3 class="headline-sm">Métricas actuales</h3>
+                    <span class="label-caps section-title-aside">Lecturas instantáneas</span>
+                </div>
+                <div class="metricas-content">
+
+                    <div class="card">
+                        <div class="card-titulo">
+                            <span class="label-caps">Sensación térmica</span>
+                            <span class="icon-badge"><i class="bi bi-thermometer-half"></i></span>
+                        </div>
+                        <div class="card-valor">
+                            <span class="headline-lg" id="sensacionTermicaActual">29</span>
+                            <span class="headline-sm">°C</span>
+                        </div>
+                        <p class="card-sub body-sm">Real: <span class="temperaturaActual">31</span>°C</p>
+                        <div class="card-pie">
+                            <span class="card-nota body-sm">
+                                <i class="bi bi-wind"></i>
+                                <span class="descripcionViento">Ligeramente más fresca por la brisa</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-titulo">
+                            <span class="label-caps">Rango térmico diario</span>
+                            <span class="icon-badge icon-badge-calido"><i class="bi bi-thermometer-high"></i></span>
+                        </div>
+                        <div class="card-cuerpo metricas-range">
+                            <div class="card-valor card-valor-column">
+                                <span class="label-caps card-sub"><i class="bi bi-arrow-down"></i>Mínima</span>
+                                <span class="headline-md metricas-minima"><span class="tempMin">19</span>°C</span>
+                                <span class="card-sub body-sm" id="horaTempMin">06:45 h</span>
+                            </div>
+                            <span class="metricas-range-sep"></span>
+                            <div class="card-valor card-valor-column metricas-range-fin">
+                                <span class="label-caps card-sub">Máxima <i class="bi bi-arrow-up"></i></span>
+                                <span class="headline-md metricas-maxima"><span class="tempMax">33</span>°C</span>
+                                <span class="card-sub body-sm" id="horaTempMax">16:30 h</span>
+                            </div>
+                        </div>
+                        <div class="card-pie">
+                            <div class="gauge gauge-rango">
+                                <span class="gauge-marca" style="left: 85%"></span>
+                            </div>
+                            <div class="metricas-escala label-caps">
+                                <span >Min <span class="tempMin">19</span>°</span>
+                                <strong>Ahora: <span class="temperaturaActual">31</span>°</strong>
+                                <span >Max <span class="tempMax">33</span>°</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-titulo">
+                            <span class="label-caps">Amanecer</span>
+                            <span class="icon-badge icon-badge-calido"><i class="bi bi-sunrise"></i></span>
+                        </div>
+                        <div class="card-cuerpo">
+                            <div class="card-valor card-valor-column">
+                                <span class="headline-lg" id="horaAmanecer">07:18</span>
+                                <span class="card-sub label-caps">Hora local (UTC+2)</span>
+                            </div>
+                            <i class="bi bi-sunrise metricas-astro-icono"></i>
+                        </div>
+                        <div class="card-pie">
+                            <span class="label-caps card-sub">alba</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-titulo">
+                            <span class="label-caps">Atardecer</span>
+                            <span class="icon-badge icon-badge-calido"><i class="bi bi-sunset"></i></span>
+                        </div>
+                        <div class="card-cuerpo">
+                            <div class="card-valor card-valor-column">
+                                <span class="headline-lg" id="horaAtardecer">21:04</span>
+                                <span class="card-sub label-caps">Hora local (UTC+2)</span>
+                            </div>
+                            <i class="bi bi-sunset metricas-astro-icono"></i>
+                        </div>
+                        <div class="card-pie metricas-luz">
+                            <span class="card-nota body-sm"><i class="bi bi-hourglass-top"></i><span id="horasLuzSolar">13h 46m de luz solar</span></span>
+                            <span class="label-caps card-sub">ocaso</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="telemetria-section">
+            <div class="container">
+                <div class="section-title section-title-telemetria">
+                    <h3 class="headline-sm">Telemetría atmosférica detallada</h3>
+                    <span class="label-caps section-title-aside">Sensores OWM estándar</span>
+                </div>
+                <div class="telemetria-content">
+
+                    <div class="card card-compacta">
+                        <div class="card-titulo">
+                            <span class="label-caps">Humedad</span>
+                            <i class="bi bi-droplet-half"></i>
+                        </div>
+                        <div class="card-cuerpo">
+                            <div class="card-valor card-valor-column">
+                                <span class="headline-lg" id="humedadActual">18%</span>
+                                <span class="card-sub body-sm">Humedad relativa</span>
+                            </div>
+                            <div class="gauge-ring" style="--gauge-value: 18">
+                                <i class="bi bi-droplet-half"></i>
+                            </div>
+                        </div>
+                        <div class="card-pie">
+                            <span class="tag tag-calida descripcionHumedad">Ambiente muy seco</span>
+                        </div>
+                    </div>
+
+                    <div class="card card-compacta">
+                        <div class="card-titulo">
+                            <span class="label-caps">Viento superficie</span>
+                            <i class="bi bi-wind"></i>
+                        </div>
+                        <div class="card-cuerpo">
+                            <div class="card-valor card-valor-column">
+                                <span class="headline-lg" id="velocidadVientoActual">3.58</span>
+                                <span class="card-sub body-sm">km/h</span>
+                            </div>
+                            <div class="compass">
+                                <span class="compass-norte">N</span>
+                                <i class="bi bi-arrow-up compass-aguja" style="--wind-deg: 25deg"></i>
+                            </div>
+                        </div>
+                        <div class="card-pie">
+                            <span class="tag tag-superficie descripcionViento">Brisa suave hacia NNE</span>
+                        </div>
+                    </div>
+
+                    <div class="card card-compacta">
+                        <div class="card-titulo">
+                            <span class="label-caps">Nubosidad total</span>
+                            <i class="bi bi-clouds"></i>
+                        </div>
+                        <div class="card-cuerpo">
+                            <div class="card-valor card-valor-column">
+                                <span class="headline-lg" id="nivelNubosidad">98%</span>
+                                <span class="card-sub body-sm" id="nubosidadOctas">7 octas</span>
+                            </div>
+                            <div class="compass compass-insignia">
+                                <i class="bi bi-clouds-fill"></i>
+                            </div>
+                        </div>
+                        <div class="card-pie">
+                            <span class="tag tag-intensa descripcionNubosidad">Cielo casi cubierto</span>
+                        </div>
+                    </div>
+
+                    <div class="card card-compacta">
+                        <div class="card-titulo">
+                            <span class="label-caps">Presión atmosférica</span>
+                            <i class="bi bi-speedometer2"></i>
+                        </div>
+                        <div class="card-cuerpo">
+                            <div class="card-valor card-valor-column">
+                                <span class="headline-lg" id="presionAtmosferica">1016</span>
+                                <span class="card-sub body-sm">hPa • a nivel del mar</span>
+                            </div>
+                            <div class="compass compass-insignia-ok">
+                                <i class="bi bi-speedometer2"></i>
+                            </div>
+                        </div>
+                        <div class="card-pie">
+                            <span class="tag tag-terciaria" id="descPresion">Presión normal / estable</span>
+                        </div>
+                    </div>
+
+                    <div class="card card-compacta">
+                        <div class="card-titulo">
+                            <span class="label-caps">Visibilidad óptica</span>
+                            <i class="bi bi-eye"></i>
+                        </div>
+                        <div class="card-cuerpo">
+                            <div class="card-valor card-valor-column">
+                                <span class="headline-lg" id="distanciaVisionKm">10</span>
+                                <span class="card-sub body-sm">km • <span id="distanciaVisionM">10,000</span> m</span>
+                            </div>
+                            <div class="compass compass-insignia-ok">
+                                <i class="bi bi-eye-fill"></i>
+                            </div>
+                        </div>
+                        <div class="card-pie">
+                            <span class="tag tag-terciaria" id="descVisibilidad">Visibilidad óptima</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="horaria-section">
+            <div class="container">
+                <div class="section-title section-title-horaria horaria-cabecera">
+                    <h3 class="headline-sm">Evolución horaria · próximas 12 horas</h3>
+                    <div class="legend body-sm horaria-legend">
+                        <span class="legend-item">Temperatura</span>
+                        <span class="legend-item legend-item-lluvia">Prob. de lluvia</span>
+                    </div>
+                </div>
+
+                <div class="horaria-pista">
+                    <div class="horaria-slots">
+                        <div class="slot slot-actual">
+                            <span class="label-md slot-hora">Ahora</span>
+                            <i class="bi bi-clouds slot-icono"></i>
+                            <span class="headline-sm slot-temp">31°</span>
+                            <span class="slot-lluvia"><i class="bi bi-droplet"></i>0%</span>
+                            <span class="slot-viento">13 km/h</span>
+                        </div>
+                        <div class="slot">
+                            <span class="label-md slot-hora">15:00</span>
+                            <i class="bi bi-sun slot-icono"></i>
+                            <span class="headline-sm slot-temp">32°</span>
+                            <span class="slot-lluvia"><i class="bi bi-droplet"></i>0%</span>
+                            <span class="slot-viento">14 km/h</span>
+                        </div>
+                        <div class="slot">
+                            <span class="label-md slot-hora">16:00</span>
+                            <i class="bi bi-sun slot-icono"></i>
+                            <span class="headline-sm slot-temp">33°</span>
+                            <span class="slot-lluvia"><i class="bi bi-droplet"></i>0%</span>
+                            <span class="slot-viento">15 km/h</span>
+                        </div>
+                        <div class="slot">
+                            <span class="label-md slot-hora">17:00</span>
+                            <i class="bi bi-clouds slot-icono"></i>
+                            <span class="headline-sm slot-temp">32°</span>
+                            <span class="slot-lluvia"><i class="bi bi-droplet"></i>5%</span>
+                            <span class="slot-viento">14 km/h</span>
+                        </div>
+                        <div class="slot">
+                            <span class="label-md slot-hora">18:00</span>
+                            <i class="bi bi-cloud-fill slot-icono"></i>
+                            <span class="headline-sm slot-temp">30°</span>
+                            <span class="slot-lluvia"><i class="bi bi-droplet"></i>5%</span>
+                            <span class="slot-viento">12 km/h</span>
+                        </div>
+                        <div class="slot">
+                            <span class="label-md slot-hora">19:00</span>
+                            <i class="bi bi-sunset slot-icono"></i>
+                            <span class="headline-sm slot-temp">28°</span>
+                            <span class="slot-lluvia"><i class="bi bi-droplet"></i>10%</span>
+                            <span class="slot-viento">10 km/h</span>
+                        </div>
+                        <div class="slot">
+                            <span class="label-md slot-hora">20:00</span>
+                            <i class="bi bi-sunset slot-icono"></i>
+                            <span class="headline-sm slot-temp">26°</span>
+                            <span class="slot-lluvia"><i class="bi bi-droplet"></i>5%</span>
+                            <span class="slot-viento">9 km/h</span>
+                        </div>
+                        <div class="slot">
+                            <span class="label-md slot-hora">21:00</span>
+                            <i class="bi bi-moon-stars-fill slot-icono"></i>
+                            <span class="headline-sm slot-temp">24°</span>
+                            <span class="slot-lluvia"><i class="bi bi-droplet"></i>0%</span>
+                            <span class="slot-viento">8 km/h</span>
+                        </div>
+                        <div class="slot">
+                            <span class="label-md slot-hora">22:00</span>
+                            <i class="bi bi-moon-stars-fill slot-icono"></i>
+                            <span class="headline-sm slot-temp">23°</span>
+                            <span class="slot-lluvia"><i class="bi bi-droplet"></i>0%</span>
+                            <span class="slot-viento">7 km/h</span>
+                        </div>
+                        <div class="slot">
+                            <span class="label-md slot-hora">23:00</span>
+                            <i class="bi bi-moon-stars-fill slot-icono"></i>
+                            <span class="headline-sm slot-temp">22°</span>
+                            <span class="slot-lluvia"><i class="bi bi-droplet"></i>0%</span>
+                            <span class="slot-viento">7 km/h</span>
+                        </div>
+                        <div class="slot">
+                            <span class="label-md slot-hora">00:00</span>
+                            <i class="bi bi-moon-stars-fill slot-icono"></i>
+                            <span class="headline-sm slot-temp">21°</span>
+                            <span class="slot-lluvia"><i class="bi bi-droplet"></i>0%</span>
+                            <span class="slot-viento">6 km/h</span>
+                        </div>
+                        <div class="slot">
+                            <span class="label-md slot-hora">01:00</span>
+                            <i class="bi bi-moon-stars-fill slot-icono"></i>
+                            <span class="headline-sm slot-temp">20°</span>
+                            <span class="slot-lluvia"><i class="bi bi-droplet"></i>0%</span>
+                            <span class="slot-viento">6 km/h</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="horaria-pie">
+                    <button class="horaria-link">Exportar reporte (.JSON)</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div>
+                <img src="assets/img/weather_logo.png" alt="Logo de WeatherApp">
+                <span class="headline-sm">WeatherApp</span>
+                <span class="body-sm">Esta web no es una aplicación del tiempo real y puede contener errores</span>
+            </div>
+            <div>
+                <span>&copy; 2026 WeatherApp</span>
+                <span>Fuentes: 
+                    <a href="https://www.aemet.es/" target="_blank">AEMET</a> • 
+                    <a href="https://openweathermap.org/" target="_blank">OpenWeather</a></span>
+            </div>
+            </div>
+    </footer>
+
+    <template id="tpl-tiempo12h">
+        <div class="slot">
+            <span class="label-md slot-hora">15:00</span>
+            <img class="slot-icono" src="https://www.aemet.es/imagenes/png/estado_cielo/13.png" alt="Estado del cielo">
+            <span class="headline-sm slot-temp">32°</span>
+            <span class="slot-lluvia"><i class="bi bi-droplet"></i><span id="probLluvia">0%</span></span>
+            <span class="slot-viento">14 km/h</span>
+        </div>
+    </template>
+</body>
+</html>

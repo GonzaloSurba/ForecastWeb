@@ -1,0 +1,19 @@
+{
+    "name": "gonzalo/weatherapp",
+    "description": "Aplicación del tiempo",
+    "type": "project",
+    "require": {
+        "vlucas/phpdotenv": "^5.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gonzalo\\Weatherapp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "GonzaloSurba",
+            "email": "suarezbarrientosgonzalo@gmail.com"
+        }
+    ]
+}

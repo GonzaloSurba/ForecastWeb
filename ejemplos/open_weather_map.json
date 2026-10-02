@@ -1,0 +1,44 @@
+{
+    "coord": {
+        "lon": -6.2063,
+        "lat": 38.2927
+    },
+    "weather": [
+        {
+            "id": 800,
+            "main": "Clear",
+            "description": "cielo claro",
+            "icon": "01d"
+        }
+    ],
+    "base": "stations",
+    "main": {
+        "temp": 27.21,
+        "feels_like": 26.68,
+        "temp_min": 27.21,
+        "temp_max": 27.21,
+        "pressure": 1017,
+        "humidity": 33,
+        "sea_level": 1017,
+        "grnd_level": 956
+    },
+    "visibility": 10000,
+    "wind": {
+        "speed": 4.13,
+        "deg": 248,
+        "gust": 8.84
+    },
+    "clouds": {
+        "all": 0
+    },
+    "dt": 1790781612,
+    "sys": {
+        "country": "ES",
+        "sunrise": 1790749160,
+        "sunset": 1790791817
+    },
+    "timezone": 7200,
+    "id": 2520957,
+    "name": "Bienvenida",
+    "cod": 200
+}

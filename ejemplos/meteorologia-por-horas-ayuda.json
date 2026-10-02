@@ -1,0 +1,314 @@
+[{
+	"unidad_generadora": "Área de Explotación y Gestión de Datos",
+	"periodicidad": "Cuatro veces al día",
+	"descripcion": "La Predicción por horas presenta la información de hora en hora hasta 48 horas. Se generan de forma automática mediante el tratamiento estadístico de los resultados de modelos numéricos de predicción",
+	"formato": "json/xml",
+
+	"campos": [{
+			"origen": [{
+					"id": "productor",
+					"descripcion": "Agencia Estatal de Meteorología - AEMET. Gobierno de España",
+					"tipo_datos": "string",
+					"requerido": true
+				},
+
+				{
+					"id": "web",
+					"descripcion": "URL de la Web de AEMET - https://www.aemet.es",
+					"tipo_datos": "string",
+					"requerido": true
+				},
+
+				{
+					"id": "language",
+					"descripcion": "es",
+					"tipo_datos": "string",
+					"requerido": true
+				},
+
+				{
+					"id": "copyright",
+					"descripcion": "© AEMET. Autorizado el uso de la información y su reproducción citando a AEMET como autora de la misma.",
+					"tipo_datos": "string",
+					"requerido": true
+				},
+
+				{
+					"id": "notaLegal",
+					"descripcion": "https://www.aemet.es/es/nota_legal/nota_legal",
+					"tipo_datos": "string",
+					"requerido": true
+				}
+			]
+		}, {
+			"id": "id",
+			"descripcion": "Indicativo de municipio",
+			"tipo_datos": "string",
+			"requerido": false
+		},
+
+		{
+			"id": "version",
+			"descripcion": "Versión",
+			"tipo_datos": "string",
+			"requerido": false
+		},
+
+		{
+			"id": "elaborado",
+			"descripcion": "Fecha de elaboración",
+			"tipo_datos": "dataTime",
+			"requerido": true
+		}, {
+			"id": "nombre",
+			"descripcion": "Nombre del municipio",
+			"tipo_datos": "string",
+			"requerido": true
+		},
+
+		{
+			"id": "provincia",
+			"descripcion": "Provincia a la que pertenece el municipio",
+			"tipo_datos": "string",
+			"requerido": true
+		}, {
+			"prediccion": [{
+				"dia": [{
+						"id": "fecha",
+						"descripcion": "Período de validez de la Predicción",
+						"tipo_datos": "date",
+						"requerido": false
+					},
+					
+					{
+						"id": "orto",
+						"descripcion": "Hora del amanecer",
+						"tipo_datos": "string",
+						"requerido": false
+					},
+		 
+					{
+						"id": "ocaso",
+						"descripcion": "Hora del atardecer",
+						"tipo_datos": "string",
+						"requerido": false
+					},
+
+					{
+
+						"estadoCielo": [{
+								"id": "periodo",
+								"descripcion": "Hora de validez para el estado del cielo (01/02/03 .... /22/23)",
+								"tipo_datos": "string",
+								"requerido": false
+							},
+
+							{
+								"id": "descripcion",
+								"descripcion": "Descripción del estado del cielo",
+								"tipo_datos": "string",
+								"requerido": false
+							},
+
+							{
+								"id": "value",
+								"descripcion": "Código del estado del Cielo",
+								"tipo_datos": "string",
+								"requerido": false
+							}
+						]
+
+					}, {
+
+						"precipitacion": [{
+								"id": "periodo",
+								"descripcion": "Hora de validez para la precipitación (01/02/03 .... /22/23)",
+								"tipo_datos": "string",
+								"requerido": false
+							},
+
+							{
+								"id": "value",
+								"descripcion": "Cantidad total de precipitación durante la hora anterior",
+								"tipo_datos": "string",
+								"unidad": "milímetros (mm)",
+								"requerido": false
+							}
+						]
+
+					}, {
+
+						"probPrecipitacion": [{
+								"id": "periodo",
+								"descripcion": "Periodo de validez para la probabilidad de precipitación (0107/0713/1319/1901)",
+								"tipo_datos": "string",
+								"requerido": false
+							},
+
+
+							{
+								"id": "value",
+								"descripcion": "Valor de la probabilidad de precipitación",
+								"tipo_datos": "string",
+								"unidad": "Tanto por ciento (%)",
+								"requerido": false
+							}
+						]
+
+					}, {
+						"probTormenta": [{
+								"id": "periodo",
+								"descripcion": "Periodo de validez para la probabilidad de tormenta (0107/0713/1319/1901)",
+								"tipo_datos": "string",
+								"requerido": false
+							},
+
+							{
+								"id": "value",
+								"descripcion": "Valor de la probabilidad de tormenta",
+								"tipo_datos": "string",
+								"unidad": "Tanto por ciento (%)",
+								"requerido": false
+							}
+						]
+
+					}, {
+
+						"nieve": [{
+								"id": "periodo",
+								"descripcion": "Hora de validez para la precipitación de nieve (01/02/03 .... /22/23)",
+								"tipo_datos": "string",
+								"requerido": false
+							},
+
+							{
+								"id": "value",
+								"descripcion": "Cantidad total de nieve que se prevé que caiga durante la hora anterior",
+								"tipo_datos": "string",
+								"unidad": "milímetros (mm)",
+								"requerido": false
+							}
+						]
+
+					}, {
+
+						"probNieve": [{
+								"id": "periodo",
+								"descripcion": "Periodo de validez para la probabilidad de precipitación de nieve (0107/0713/1319/1901)",
+								"tipo_datos": "string",
+								"requerido": false
+							},
+
+							{
+								"id": "value",
+								"descripcion": "Valor de la probabilidad de precipitación de nieve",
+								"tipo_datos": "string",
+								"unidad": "Tanto por ciento (%)",
+								"requerido": false
+							}
+						]
+
+					}, {
+
+						"temperatura": [{
+								"id": "periodo",
+								"descripcion": "Hora de validez para la temperatura (01/02/03 .... /22/23)",
+								"tipo_datos": "string",
+								"requerido": false
+							},
+
+							{
+								"id": "value",
+								"descripcion": "Valor de la temperatura",
+								"tipo_datos": "string",
+								"unidad": "Grados celsius",
+								"requerido": false
+							}
+						]
+
+					}, {
+
+						"sensTermica": [{
+								"id": "periodo",
+								"descripcion": "Hora de validez para la sensación térmica (01/02/03 .... /22/23)",
+								"tipo_datos": "string",
+								"requerido": false
+							},
+
+							{
+								"id": "value",
+								"descripcion": "Valor de la sensación térmica",
+								"tipo_datos": "string",
+								"unidad": "Grados celsius",
+								"requerido": false
+							}
+						]
+
+					}, {
+
+						"humedadRelativa": [{
+								"id": "periodo",
+								"descripcion": "Hora de validez para la humedad relativa (01/02/03 .... /22/23)",
+								"tipo_datos": "string",
+								"requerido": false
+							},
+
+							{
+								"id": "value",
+								"descripcion": "Valor de la humedad relativa",
+								"tipo_datos": "string",
+								"unidad": "Tanto por ciento (%)",
+								"requerido": false
+							}
+						]
+
+
+					}, {
+						"viento": [{
+
+
+								"id": "periodo",
+								"descripcion": "Hora de validez para el viento (01/02/03 .... /22/23)",
+								"tipo_datos": "string",
+								"requerido": false
+							},
+
+							{
+								"id": "direccion",
+								"descripcion": "Dirección del viento (N/Norte, NE/Nordeste, E/Este, SE/Sudeste, S/Sur, SO/Suroeste, O/Oeste, NO/Noroeste, C/Calma",
+								"tipo_datos": "string",
+								"requerido": false
+							}, 
+							
+							{
+								"id": "velocidad",
+								"descripcion": "Velocidad del viento",
+								"tipo_datos": "string",
+								"unidad": "Kilómetros por hora (km/h)",
+								"requerido": false
+							}
+						]
+
+					}, {
+
+						"rachaMax": [{
+								"id": "periodo",
+								"descripcion": "Periodo de validez para la racha máxima (00-06, 06-12, 12-18, 18-24, 00-12, 00-24, 12-24)",
+								"tipo_datos": "string",
+								"requerido": false
+							},
+
+							{
+								"id": "value",
+								"descripcion": "Valor de la Racha máxima",
+								"tipo_datos": "string",
+								"unidad": "Kilómetros por hora (km/h)",
+								"requerido": false
+							}]
+
+					}]
+
+			}]
+		}]
+
+}]

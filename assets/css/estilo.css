@@ -1,0 +1,1318 @@
+:root {
+    /* Tipografía */
+    --font-main: "Plus Jakarta Sans", sans-serif;
+
+    /* Colores */
+    --color-primary: #006194;
+    --color-on-primary: #ffffff;
+    --color-primary-container: #007bb9;
+    --color-on-primary-container: #fdfcff;
+    --color-primary-fixed: #cce5ff;
+    --color-primary-fixed-dim: #93ccff;
+
+    --color-secondary: #855300;
+    --color-on-secondary: #ffffff;
+    --color-secondary-container: #fea619;
+    --color-on-secondary-container: #684000;
+    --color-secondary-fixed: #ffddb8;
+    --color-secondary-fixed-dim: #ffb95f;
+    --color-on-secondary-fixed: #2a1700;
+
+    --color-tertiary: #006947;
+    --color-on-tertiary: #ffffff;
+    --color-tertiary-container: #00855b;
+
+    /* Superficies y fondos */
+    --color-bg: #f8f9ff;
+    --color-on-bg: #0b1c30;
+    --color-surface: #f8f9ff;
+    --color-surface-container: #e5eeff;
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-low: #eff4ff;
+    --color-surface-container-high: #dce9ff;
+    --color-surface-container-highest: #d3e4fe;
+    --color-surface-variant: #d3e4fe;
+    --color-on-surface: #0b1c30;
+    --color-on-surface-variant: #3f4850;
+    --color-inverse-surface: #213145;
+
+    /* Bordes y estados de error */
+    --color-outline: #707881;
+    --color-outline-variant: #bfc7d2;
+    --color-error: #ba1a1a;
+    --color-error-container: #ffdad6;
+
+    /* Bordes redondeados */
+    --radius-sm: 0.25rem; /* 4px */
+    --radius-md: 0.5rem; /* 8px */
+    --radius-lg: 0.75rem; /* 12px */
+    --radius-full: 9999px;
+
+    /* Espaciados generales */
+    --space-xs: 0.25rem; /* 4px */
+    --space-sm: 0.5rem; /* 8px */
+    --space-md: 1rem; /* 16px */
+    --space-lg: 1.5rem; /* 24px */
+    --space-xl: 2.25rem; /* 36px */
+
+    /* Layout & Grid */
+    --layout-margin: 1rem;
+    --layout-gutter: 1.25rem;
+}
+
+/* Ajustes de layout para escritorio */
+@media (min-width: 768px) {
+    :root {
+        --layout-margin: 2.5rem;
+        --layout-gutter: 1.75rem;
+    }
+}
+
+/* Ajustes de fuentes */
+/* DISPLAY / HERO */
+.display-hero {
+    font-size: 2.5rem; /* 40px (Mobile first) */
+    line-height: 3rem; /* 48px */
+    letter-spacing: -0.02em;
+    font-weight: 700;
+}
+
+@media (min-width: 768px) {
+    .display-hero {
+        font-size: 3.5rem; /* 56px (Desktop) */
+        line-height: 4rem;  /* 64px */
+        letter-spacing: -0.03em;
+    }
+}
+
+/* HEADLINES / TITULARES */
+.headline-lg {
+    font-size: 1.625rem; /* 26px (Mobile) */
+    line-height: 2.125rem; /* 34px */
+    letter-spacing: -0.01em;
+    font-weight: 600;
+}
+
+@media (min-width: 768px) {
+    .headline-lg {
+        font-size: 2rem; /* 32px (Desktop) */
+        line-height: 2.5rem; /* 40px */
+        letter-spacing: -0.02em;
+    }
+}
+
+.headline-md {
+    font-size: 1.375rem; /* 22px */
+    line-height: 1.875rem; /* 30px */
+    letter-spacing: -0.01em;
+    font-weight: 600;
+}
+
+.headline-sm {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.625rem; /* 26px */
+    letter-spacing: 0em;
+    font-weight: 600;
+}
+
+/* BODY / TEXTO DE PÁRRAFO */
+.body-lg {
+    font-size: 1rem; /* 16px */
+    line-height: 1.5rem; /* 24px */
+    letter-spacing: 0em;
+    font-weight: 400;
+}
+
+.body-md {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.25rem; /* 20px */
+    letter-spacing: 0.005em;
+    font-weight: 400;
+}
+
+.body-sm {
+    font-size: 0.75rem; /* 12px */
+    line-height: 1rem; /* 16px */
+    letter-spacing: 0.01em;
+    font-weight: 400;
+}
+
+/* LABELS / ETIQUETAS Y BOTONES */
+.label-lg {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.25rem; /* 20px */
+    letter-spacing: 0.01em;
+    font-weight: 600;
+}
+
+.label-md {
+    font-size: 0.75rem; /* 12px */
+    line-height: 1rem; /* 16px */
+    letter-spacing: 0.02em;
+    font-weight: 500;
+}
+
+.label-caps {
+    font-size: 0.6875rem; /* 11px */
+    line-height: 0.875rem; /* 14px */
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.font-semibold { 
+    font-weight: 600;
+}
+
+/* Estilos generales de la página */
+html,
+body,
+h2,
+p {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--color-bg);
+    font-family: var(--font-main);
+
+    background-image: 
+        radial-gradient(
+            circle at 85% 12%,
+            rgb(from var(--color-primary-fixed) r g b / 0.45) 0%,
+            rgba(248, 249, 255, 0) 60%
+        ),
+        radial-gradient(
+            circle at 15% 25%,
+            rgb(from var(--color-secondary-container) r g b / 0.08) 0%,
+            rgba(248, 249, 255, 0) 50%
+        );
+    
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+}
+
+section {
+    width: 100%;
+    padding-inline: var(--layout-margin);
+    padding-block: var(--space-md);
+}
+
+/* Contenedor de contenido: centra y limita el ancho de todas las secciones */
+.container {
+    width: 100%;
+    max-width: 80rem;
+    margin: auto;
+}
+
+button {
+    cursor: pointer;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* ================================================================
+   COMPONENTES COMPARTIDOS
+   Primitivas reutilizadas por las secciones de métricas, telemetría
+   y franja horaria.
+   ================================================================ */
+
+/* ---------- Cabecera de sección ---------- */
+.section-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.section-title::before {
+    content: "";
+    width: 0.625rem;
+    height: 1.5rem;
+    border-radius: var(--radius-full);
+    background-color: var(--color-primary);
+}
+
+.section-title-telemetria::before { background-color: var(--color-secondary-container); }
+.section-title-horaria::before { background-color: var(--color-primary-container); }
+
+.section-title h3 {
+    font-weight: 700;
+    color: var(--color-on-surface);
+}
+
+.section-title-aside {
+    margin-left: auto;
+    color: var(--color-on-surface-variant);
+}
+
+/* ---------- Tarjeta ---------- */
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    background-color: var(--color-surface-container-lowest);
+    border-radius: 12px;
+    padding: var(--space-lg);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 6px 10px -2px rgba(0, 0, 0, 0.08);
+}
+
+.card-compacta { padding: var(--space-md); }
+
+.card-compacta .card-valor .headline-lg {
+    font-size: 2rem;
+    line-height: 1.1;
+    font-weight: 800;
+}
+
+.card-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--color-on-surface-variant);
+}
+
+.card-titulo > i {
+    font-size: 20px;
+    color: var(--color-primary);
+}
+
+.icon-badge {
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-primary-fixed);
+    color: var(--color-primary);
+}
+
+.icon-badge i { font-size: 18px; }
+
+.icon-badge-calido {
+    background-color: var(--color-secondary-fixed);
+    color: var(--color-secondary);
+}
+
+.card-cuerpo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding-block: var(--space-sm);
+}
+
+.card-valor {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xs);
+}
+
+.card-valor .headline-lg {
+    font-size: 2.125rem;
+    line-height: 1.1;
+    font-weight: 800;
+}
+
+.card-valor .headline-sm { color: var(--color-primary); }
+
+.card-valor-column {          /* el dato se apila en vez de ir en línea */
+    flex-direction: column;
+    gap: 0;
+}
+
+.card-sub { color: var(--color-on-surface-variant); }
+
+.card-pie { padding-top: var(--space-sm); }
+
+.card-nota {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--color-on-surface-variant);
+}
+
+.card-nota i { font-size: 0.875rem; }
+
+.card-nota .bi-check { color: var(--color-tertiary); }
+.card-nota .bi-info-circle { color: var(--color-primary); }
+
+/* ---------- Etiqueta de estado ---------- */
+.tag {
+    display: inline-flex;
+    padding: 0.25rem 0.625rem;
+    border-radius: var(--radius-full);
+    font-size: 0.6875rem;
+    line-height: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.tag-superficie {
+    background-color: var(--color-surface-container-high);
+    color: var(--color-on-surface);
+}
+
+.tag-intensa {
+    background-color: var(--color-surface-container-highest);
+    color: var(--color-on-surface);
+}
+
+.tag-terciaria {
+    background-color: rgb(from var(--color-tertiary) r g b / 10%);
+    color: var(--color-tertiary);
+}
+
+.tag-calida {
+    background-color: rgb(from var(--color-secondary-fixed) r g b / 50%);
+    color: var(--color-on-secondary-fixed);
+}
+
+/* ---------- Medidor de barra ---------- */
+.gauge {
+    position: relative;
+    height: 0.5rem;
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface-container);
+}
+
+.gauge-rango {
+    background: linear-gradient(90deg, var(--color-primary-fixed-dim),
+        var(--color-secondary-fixed),
+        var(--color-secondary-container));
+}
+
+.gauge-marca {
+    position: absolute;
+    top: -0.25rem;
+    translate: -50% 0;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: var(--color-surface-container-lowest);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    display: grid;
+    place-items: center;
+}
+
+.gauge-marca::after {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+}
+
+/* ---------- Medidor de anillo ---------- */
+.gauge-ring {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: conic-gradient(var(--color-primary) calc(var(--gauge-value) * 1%),
+        var(--color-surface-container-high) 0);
+}
+
+.gauge-ring::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background-color: var(--color-surface-container-lowest);
+}
+
+.gauge-ring i {
+    position: relative;
+    font-size: 20px;
+    color: var(--color-primary);
+}
+
+.gauge-ring-terciaria {
+    background: conic-gradient(var(--color-tertiary) calc(var(--gauge-value) * 1%),
+        var(--color-surface-container-high) 0);
+}
+
+.gauge-ring-terciaria i { color: var(--color-tertiary); }
+
+/* ---------- Caja circular de 3rem ---------- */
+.compass {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background-color: var(--color-surface-container-low);
+}
+
+.compass-norte {
+    position: absolute;
+    top: 2px;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--color-on-surface-variant);
+}
+
+.compass-aguja {
+    font-size: 1.75rem;
+    color: var(--color-primary);
+    rotate: var(--wind-deg);
+}
+
+.compass-insignia { background-color: var(--color-surface-container-high); }
+.compass-insignia > i { font-size: 24px; color: var(--color-primary); }
+
+.compass-insignia-ok { background-color: rgb(from var(--color-tertiary) r g b / 10%); }
+.compass-insignia-ok > i { color: var(--color-tertiary); }
+
+/* ---------- Leyenda ---------- */
+.legend {
+    display: flex;
+    gap: 0.75rem;
+    color: var(--color-on-surface-variant);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.legend-item::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+}
+
+.legend-item-lluvia::before { background-color: var(--color-primary-fixed-dim); }
+
+/* ---------- Slot horario ---------- */
+.slot {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    transition: background-color 0.2s ease, translate 0.2s ease;
+}
+
+.slot:hover {
+    background-color: var(--color-surface-container);
+    translate: 0 -4px;
+}
+
+.slot-actual { background-color: var(--color-surface-container-high); }
+
+.slot-hora { color: var(--color-on-surface-variant); }
+.slot-actual .slot-hora { color: var(--color-primary); font-weight: 700; }
+
+.slot-icono {
+    font-size: 1.75rem;
+    margin-block: 0.5rem;
+    color: var(--color-secondary-container);
+}
+
+.slot-icono.bi-cloud-fill { color: var(--color-primary-container); }
+.slot-icono.bi-sunset { color: var(--color-secondary); }
+.slot-icono.bi-moon-stars-fill { color: var(--color-on-surface-variant); }
+
+.slot-temp {
+    font-weight: 700;
+    color: var(--color-on-surface);
+}
+
+.slot-lluvia {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-top: var(--space-sm);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-on-surface-variant);
+}
+
+.slot-lluvia i {
+    font-size: 12px;
+    color: var(--color-primary);
+}
+
+.slot-actual .slot-lluvia { color: var(--color-primary); }
+
+.slot-viento {
+    margin-top: 4px;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-on-surface-variant);
+}
+
+/* Menú de navegación */
+header {
+    width: 100%;
+    height: 4rem;
+    background-color: rgb(from var(--color-bg) r g b / 85%);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+    backdrop-filter: blur(24px);
+}
+
+.header-container {
+    width: 100%;
+    height: 100%;
+    padding-inline: 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.header-logo {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+    color: var(--color-on-surface);
+}
+
+.header-logo img {
+    height: 2rem;
+}
+
+.header-menu {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+}
+
+nav {
+    display: flex;
+    padding: 0.25rem;
+    gap: var(--space-xs);
+    background-color: #eff4ff;
+    border-radius: var(--radius-full);
+
+    a {
+        padding-inline: var(--space-md);
+        padding-block: 0.375rem;
+        border-radius: var(--radius-full);
+        text-decoration: none;
+        transition: background-color 0.2s ease;
+        color: var(--color-on-surface-variant);
+    }
+
+    a:hover {
+        background-color: #dce9ff;
+    }
+}
+
+.header-hora {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-shrink: 0;
+    padding-inline: var(--space-md);
+    padding-block: var(--space-xs);
+    background-color: var(--color-on-primary);
+    border-radius: var(--radius-full);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+
+    i {
+        color: var(--color-primary);
+        font-size: 20px;
+    }
+
+    time {
+        font-size: 0.9rem !important; 
+    }
+}
+
+/* Section buscador de municipios */
+.buscador-section {
+    padding-inline: var(--layout-margin);
+    padding-block: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.buscador-container {
+    width: 100%;
+    max-width: 64rem;
+    margin: auto;
+    align-content: center;
+}
+
+.buscador-input-container {
+    width: 100%;
+    border-radius: var(--radius-full);
+    background-color: var(--color-on-primary);
+    padding: 0.375rem; /* 16px */
+    box-shadow: 0 8px 30px rgb(0,0,0,0.04);
+
+    i.bi-search {
+        color: var(--color-primary);
+        font-size: 20px;
+    }
+
+    input {
+        width: 100%;
+        padding-block: var(--space-sm);
+        border: none;
+    }
+
+    input:focus {
+        outline: none;
+    }
+
+    .buscador-x-button {
+        border: none;
+        background-color: var(--color-on-primary);
+        border-radius: var(--radius-full);
+        padding: var(--space-sm);
+        transition: background-color 0.2s ease;
+    }
+
+    .buscador-x-button:hover {
+        background-color: var(--color-surface-container);
+    }
+
+    i.bi-x-lg {
+        font-size: 18px;
+    }
+}
+
+.buscador-input{
+    width: 100%;
+    padding-inline: var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.buscador-ubicacion-button {
+    display: flex;
+    align-items: center;
+    background-color: #cce5ff;
+    border: none;
+    border-radius: var(--radius-full);
+    padding-inline: var(--space-md);
+    padding-block: var(--space-sm);
+    transition: background-color 0.2s ease;
+
+    i {
+        color: var(--color-primary);
+        font-size: 18px;
+    }
+}
+
+.buscador-ubicacion-button:hover {
+    background-color: #93ccff;
+}
+
+.buscador-arrow-button {
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: var(--radius-full);
+    width: 2.5rem;
+    height: 2.5rem;
+    transition: background-color 0.2s ease;
+
+    i {
+        color: var(--color-on-primary);
+        font-size: 20px;
+    }
+}
+
+.buscador-arrow-button:hover {
+    background-color: var(--color-primary-container);
+}
+
+.buscador-frecuentes {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding-top: var(--space-sm);
+    
+    button {
+        border: none;
+        border-radius: var(--radius-full);
+        background-color: var(--color-surface-container);
+        color: var(--color-primary);
+        padding-inline: var(--space-md);
+        padding-block: var(--space-xs);
+        transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+        background-color: #cce5ff;
+    }
+}
+
+/* Section aviso meteorológico */
+.aviso-tiempo-hoy-section {
+
+    .aviso-tiempo-hoy-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem;
+        background-color: var(--color-on-primary);
+        border-radius: 1rem;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+
+        p {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+    }
+
+    @media (min-width: 640px) {
+        .aviso-tiempo-hoy-container {
+            padding-inline: 1.5rem;
+            padding-block: 0.875rem;
+        }
+    }
+
+    .bi-info-circle-fill {
+        color: var(--color-secondary);
+        font-size: 18px;
+    }
+
+    strong {
+        color: var(--color-secondary);
+    }
+
+    .aviso-ica {
+        background-color: rgb(from var(--color-tertiary) r g b / 10%);
+        border-radius: var(--radius-full);
+        padding-inline: 0.75rem;
+        padding-block: var(--space-xs);
+
+        p {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            text-transform: uppercase;
+            color: var(--color-tertiary);
+        }
+        
+        .punto {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 100%;
+            background-color: var(--color-tertiary);
+        }
+
+        span {
+            color: var(--color-tertiary);
+        }
+    }
+}
+
+/* Section tiempo actual */
+.tiempo-actual-section {
+
+    .tiempo-actual-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.5rem;
+        background: linear-gradient(
+            135deg, 
+            var(--color-surface-container-lowest), 
+            var(--color-surface-container-low) 50%, 
+            var(--color-surface-container-high)
+        );
+        padding: var(--space-lg);
+        box-shadow: 0 16px 40px rgba(0, 97, 148, 0.06);
+    }
+
+    @media (min-width: 768px) {
+        .tiempo-actual-card {
+            padding: 2.5rem;
+        }
+    }
+
+    .tiempo-actual-content {
+        position: relative;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    @media (min-width: 1024px) {
+        .tiempo-actual-content {
+            grid-template-columns: repeat(12, 1fr);
+        }
+        .tiempo-actual-primary-col { grid-column: span 7; }
+        .tiempo-actual-radar-col { grid-column: span 5; }
+    }
+}
+
+.ambient-glow {
+    position: absolute;
+    border-radius: var(--radius-full);
+    pointer-events: none;
+}
+
+.glow-primary {
+    top: -6rem;     /* -top-24 */
+    right: -6rem;   /* -right-24 */
+    width: 24rem;   /* w-96 */
+    height: 24rem;  /* h-96 */
+    /* primary-fixed/40 */
+    background-color: rgb(from var(--color-primary-fixed) r g b / 0.4); 
+    filter: blur(64px); /* blur-3xl */
+}
+
+.glow-secondary {
+    bottom: -5rem;  /* -bottom-20 */
+    right: 25%;     /* right-1/4 */
+    width: 20rem;   /* w-80 */
+    height: 20rem;  /* h-80 */
+    /* secondary-fixed/30 */
+    background-color: rgb(from var(--color-secondary-fixed) r g b / 0.3);
+    filter: blur(40px); /* blur-2xl */
+}
+
+.tiempo-actual-primary-col,
+.tiempo-actual-radar-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+/* Componentes: Badges y Pills */
+.badge-group,
+.pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+
+    i {
+        font-size: 16px;
+    }
+
+    .bi-clock-history {
+        color: var(--color-tertiary);
+    }
+}
+
+.badge-surface {
+    background-color: var(--color-on-primary);
+    color: var(--color-primary);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.badge-surface-subtle {
+    background-color: rgb(from var(--color-on-primary) r g b / 0.8);
+    color: var(--color-on-surface-variant);
+}
+
+.badge-tag {
+    font-size: 11px;
+    color: var(--color-on-surface-variant);
+    background-color: var(--color-surface-container-high);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+}
+
+.pill {
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+
+    i {
+        font-size: 18px;
+    }
+
+    .bi-check-circle {
+        color: var(--color-tertiary);
+    }
+
+    .bi-sun {
+        color: var(--color-secondary);
+    }
+
+    .bi-wind {
+        color: var(--color-primary);
+    }
+}
+
+.pill-surface {
+    background-color: var(--color-surface-container);
+    color: var(--color-on-surface);
+}
+
+.pill-warning {
+    background-color: var(--color-secondary-fixed);
+    color: var(--color-on-secondary-fixed);
+}
+
+/* Temperatura y Gráficos */
+.temp-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding-block: var(--space-sm);
+}
+
+@media (min-width: 640px) {
+    .temp-row {
+        flex-direction: row;
+        align-items: center;
+        gap: 2rem;
+    }
+}
+
+.temp-display {
+    display: flex;
+    align-items: baseline;
+}
+
+.temp-val {
+    font-size: 72px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    color: var(--color-on-surface);
+}
+
+@media (min-width: 640px) {
+    .temp-val {
+        font-size: 96px;
+    }
+}
+
+.temp-unit {
+    color: var(--color-primary);
+    font-weight: 300;
+    margin-top: -2rem;
+    margin-left: 0.25rem;
+}
+
+.condition-art {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#weather-description {
+    color: var(--color-on-surface-variant);
+}
+
+.svg-container {
+    position: relative;
+    width: 6rem;
+    height: 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.svg-sun {
+    position: absolute;
+    width: 4rem;
+    height: 4rem;
+    top: -0.25rem;
+    right: -0.25rem;
+}
+
+.svg-cloud {
+    position: relative;
+    z-index: 10;
+    width: 5rem;
+    height: 5rem;
+    filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.07));
+}
+
+.badge-caps {
+    display: inline-block;
+    padding: 0.125rem 0.625rem;
+    border-radius: var(--radius-full);
+    background-color: var(--color-secondary-fixed);
+    color: var(--color-on-secondary-fixed);
+    margin-bottom: 0.25rem;
+    width: max-content;
+}
+
+/* Tarjeta de Radar */
+.radar-card {
+    width: 100%;
+    border-radius: 1rem;
+    background-color: rgb(from var(--color-surface-container-lowest) r g b / 0.8);
+    backdrop-filter: blur(12px);
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .bi-radar {
+        font-size: 20px;
+        color: var(--color-primary);
+    }
+}
+
+.radar-header,
+.radar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+.radar-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.live-tag {
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    background-color: rgb(from var(--color-tertiary) r g b / 0.1);
+    color: var(--color-tertiary);
+    text-transform: uppercase;
+}
+
+.radar-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 9rem;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background-color: var(--color-surface-container-high);
+}
+
+.radar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.radar-image-wrapper:hover .radar-img {
+    transform: scale(1.05);
+}
+
+.radar-footer {
+    color: var(--color-on-surface-variant);
+}
+
+/* Section métricas */
+.metricas-content {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.75rem;
+}
+
+@media (min-width: 640px) {
+    .metricas-content {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .metricas-content {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* Rango térmico: mínima / separador / máxima (se apoya en .card-cuerpo) */
+.metricas-range > .card-valor { align-items: flex-start; }
+
+.metricas-range > .card-valor.metricas-range-fin { align-items: flex-end; }
+
+.metricas-range-sep {
+    width: 1px;
+    height: 2.5rem;
+    background-color: var(--color-surface-container-highest);
+}
+
+.metricas-range i { font-size: 0.875rem; }
+.metricas-range .bi-arrow-down { color: var(--color-primary); }
+.metricas-range .bi-arrow-up { color: var(--color-error); }
+
+.metricas-minima { color: var(--color-primary); }
+.metricas-maxima { color: var(--color-error); }
+
+.metricas-astro-icono {
+    margin-left: auto;
+    font-size: 2.5rem;
+    color: var(--color-secondary-container);
+}
+
+.metricas-astro-icono.bi-sunset { color: var(--color-secondary); }
+
+.metricas-escala {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--space-sm);
+    font-size: 0.625rem;
+}
+
+.metricas-escala strong { color: var(--color-primary); }
+
+.metricas-luz {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.metricas-luz .card-nota {
+    color: var(--color-secondary);
+    font-weight: 600;
+}
+
+/* Section telemetría */
+.telemetria-content {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: var(--space-md);
+}
+
+@media (min-width: 640px) {
+    .telemetria-content {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 768px) {
+    .telemetria-content {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .telemetria-content {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+/* Section franja horaria */
+.horaria-section {
+    padding-bottom: var(--space-xl);
+}
+
+.horaria-cabecera {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+@media (min-width: 640px) {
+    .horaria-cabecera {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+.horaria-legend { margin-left: auto; }
+
+.horaria-pista {
+    overflow-x: auto;
+    padding: var(--space-md);
+    padding-bottom: 1.5rem;
+    border-radius: 12px;
+    background-color: var(--color-surface-container-lowest);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.horaria-slots {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    min-width: 54rem;
+}
+
+.horaria-pie {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-sm) 0;
+}
+
+@media (min-width: 640px) {
+    .horaria-pie {
+        flex-direction: row;
+        align-items: center;
+        justify-content: end;
+    }
+}
+
+.horaria-link {
+    border: 0;
+    background: none;
+    padding: 0;
+    font-size: inherit;
+    color: var(--color-on-surface-variant);
+    transition: color 0.2s ease;
+}
+
+.horaria-link:hover { color: var(--color-primary); }
+
+footer {
+    width: 100%;
+    background-color: rgb(from var(--color-surface-container-low) r g b / 70%);
+    padding-block: var(--space-xl);
+}
+
+.footer-container {
+    width: 100%;
+    padding-inline: var(--layout-margin);
+    display: flex;
+    gap: var(--space-md);
+    align-items: center;
+    justify-content: space-between;
+
+    div {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+    }
+
+    img {
+        height: 1.5rem;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+}
