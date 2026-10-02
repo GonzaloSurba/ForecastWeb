@@ -1,4 +1,4 @@
-import { getAemetData } from "./api.js";
+import { getAemetData, getAvisosData } from "./api.js";
 import { cargarRadar } from "./radar.js";
 
 const horaActual = new Date().getHours()
@@ -290,14 +290,15 @@ async function obtenerDatosTiempo({ municipio = null, latitud = null, longitud =
     }
 
     const datosTiempo = await getAemetData({ municipio: municipio, latitud: latitud, longitud: longitud })
+    const avisosTiempo = await getAvisosData({ municipio: municipio, latitud: latitud, longitud: longitud })
     if (datosTiempo) {
-        mostrarDatosTiempo(datosTiempo["AEMET"], datosTiempo["OpenWeather"])
+        mostrarDatosTiempo(datosTiempo["AEMET"], datosTiempo["OpenWeather"], avisosTiempo)
     } else {
         alert("No se han podido obtener los datos del tiempo")
     }
 }
 
-function mostrarDatosTiempo(datosAemet, datosOpenWeather = null) {
+function mostrarDatosTiempo(datosAemet, datosOpenWeather = null, avisosTiempo = null) {
     let datos = datosAemet[0]
 
     const iconoClimaActual = document.querySelector("#iconoClimaActual")
@@ -313,6 +314,12 @@ function mostrarDatosTiempo(datosAemet, datosOpenWeather = null) {
     const viento = datos.prediccion.dia[0].vientoAndRachaMax
     const vientoActual = obtenerVientoActual(viento)
     const descripcionVientoElement = document.querySelectorAll(".descripcionViento")
+
+    // Aviso meteorológico
+    if (avisosTiempo && (avisosTiempo?.avisos).length > 0) {
+        document.querySelector("#avisoMeteorologico").textContent = `${avisosTiempo.avisos[0].cabecera}. ${avisosTiempo.avisos[0].descripcion}`
+        document.querySelector(".aviso-tiempo-hoy-section").style.display = "inline"
+    }
 
     // Tarjeta principal
     document.querySelector("#nombreMunicipio").textContent = datos.nombre

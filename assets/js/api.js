@@ -47,6 +47,28 @@ async function getOpenWeatherData(municipio, latitud, longitud) {
     }
 }
 
+/**
+ * Avisos Meteoalerta del municipio. Devuelve null si la consulta falla, lo cual no es
+ * lo mismo que un municipio sin avisos: quien lo llame tiene que poder distinguirlos.
+ */
+export async function getAvisosData({ municipio = null, latitud = null, longitud = null }) {
+    let url
+    if (municipio) {
+        url = `api/getAvisosMunicipio.php?municipio=${encodeURIComponent(municipio)}`
+    } else if (latitud && longitud) {
+        url = `api/getAvisosMunicipio.php?latitud=${encodeURIComponent(latitud)}&longitud=${encodeURIComponent(longitud)}`
+    } else {
+        return
+    }
+
+    try {
+        return await pedirClima(url)
+    } catch (error) {
+        console.error("Se ha producido un error al obtener los avisos:", error.message)
+        return null
+    }
+}
+
 export async function getAemetData({ municipio = null, latitud = null, longitud = null }) {
     let url
     if (municipio) {

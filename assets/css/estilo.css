@@ -774,6 +774,8 @@ nav {
 /* Section aviso meteorológico */
 .aviso-tiempo-hoy-section {
 
+    display: none;
+
     .aviso-tiempo-hoy-container {
         display: flex;
         align-items: center;
