@@ -1,152 +1,43 @@
 <?php
 
-//error_reporting(E_ALL);
-//ini_set("display_errors", 1);
-
-include_once('loadEnv.php');
-include_once('getMunicipio.php');
-
 /**
- * AEMET mezcla codificaciones en la misma respuesta: el bloque "origen" viene en
- * ISO-8859-15 y el de datos en UTF-8. Convertir todo desde ISO rompe los acentos
- * que ya venían en UTF-8, así que solo convertimos los bytes sueltos.
+ * Endpoint GET. Prevision horaria por municipio de AEMET.
+ *
+ * Acepta 'municipio' o bien 'latitud' + 'longitud'. No contiene logica de negocio:
+ * resolver el municipio y pedir la prediccion es cosa de los Services.
  */
-function aUtf8Mixtos(string $texto): string {
-    $salida = '';
-    $longitud = strlen($texto);
-    $i = 0;
 
-    while ($i < $longitud) {
-        $byte = ord($texto[$i]);
+require_once __DIR__ . '/src/bootstrap.php';
 
-        if ($byte < 0x80) {
-            $salida .= $texto[$i];
-            $i++;
-            continue;
-        }
-
-        $tam = match (true) {
-            $byte >= 0xF0 => 4,
-            $byte >= 0xE0 => 3,
-            $byte >= 0xC0 => 2,
-            default       => 0
-        };
-
-        if ($tam > 0) {
-            $secuencia = substr($texto, $i, $tam);
-            if (mb_check_encoding($secuencia, 'UTF-8')) {
-                $salida .= $secuencia;
-                $i += $tam;
-                continue;
-            }
-        }
-
-        $salida .= mb_convert_encoding($texto[$i], 'UTF-8', 'ISO-8859-15');
-        $i++;
-    }
-
-    return $salida;
-}
-
-if (!isset($_GET["municipio"]) || empty($_GET["municipio"])) {
-    if ((!isset($_GET["latitud"]) || empty($_GET["latitud"]) || !isset($_GET["longitud"]) || empty($_GET["longitud"]))) {
-        echo json_encode(["error" => "Faltan los parámetros 'municipio' o 'latitud' y 'longitud'"]);
-        exit();
-    } else {
-        $datosMunicipio = json_decode(buscarPorLatLon(__DIR__ . '/MUNICIPIOS.csv', $_GET["latitud"], $_GET["longitud"]));
-
-        // buscarPorLatLon devuelve {"error": "..."} o [] si no encuentra municipio
-        if (isset($datosMunicipio[0]->error)) {
-            echo json_encode(["error" => $datosMunicipio[0]->error]);
-            exit();
-        }
-        if (!isset($datosMunicipio[0]->NOMBRE_ACTUAL)) {
-            echo json_encode(["error" => "No se ha podido determinar el municipio a partir de las coordenadas"]);
-            exit();
-        }
-
-        $municipio = $datosMunicipio[0]->NOMBRE_ACTUAL;
-    }
-} else {
-    $municipio = $_GET["municipio"];
-}
-
-$archivo = __DIR__ . '/config/diccionario26.csv';
-
-$municipioBuscado = json_decode(buscarPorNombre($archivo, $municipio));
-
-if (!isset($municipioBuscado[0]->CPRO, $municipioBuscado[0]->CMUN)) {
-    echo json_encode(["error" => "No se encontró el municipio '" . $municipio . "'"]);
-    exit();
-}
-
-$codMunicipio = $municipioBuscado[0]->CPRO . $municipioBuscado[0]->CMUN;
-
-header('Content-Type: application/json; charset=utf-8');
+use App\Exception\ApiException;
+use App\Http\ApiResponse;
+use App\Http\Request;
+use App\Services\AemetService;
+use App\Services\MunicipioService;
 
 try {
-    $datos = obtenerApiKeyAemet();
-    $apikey = $datos["apikey"];
-    $url = $datos["url"];
-    $urlCompleta = str_replace('{municipio}', $codMunicipio, $url);
+    $municipios = new MunicipioService();
+    $nombre = Request::texto('municipio');
 
-    // Inicio curl
-    $ch = curl_init($urlCompleta);
+    if ($nombre === null) {
+        if (Request::texto('latitud') === null || Request::texto('longitud') === null) {
+            throw ApiException::peticionInvalida(
+                "Faltan los parametros 'municipio' o 'latitud' y 'longitud'"
+            );
+        }
 
-    // Configuro curl
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Devolver el resultado como texto
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "Authorization: Bearer " . $apikey,
-        'Content-Type: application/json'
-    ]);
-
-    // Ejecuto la petición
-    $respuesta = curl_exec($ch);
-
-    // Compruebo si hubo errores
-    if (curl_errno($ch)) {
-        echo "Error: " . curl_error($ch);
+        $nombre = $municipios->nombrePorCoordenadas(
+            Request::numero('latitud'),
+            Request::numero('longitud')
+        );
     }
 
-    // Convierto el JSON recibido a un array de PHP
-    $datos = json_decode($respuesta, true);
+    $prevision = (new AemetService())->prevision($municipios->codigoIne($nombre));
 
-    if (!isset($datos) || empty($datos)) {
-        echo json_encode(["error" => "No se obtuvieron datos", "url" => $urlCompleta]);
-        exit();
-    }
-
-    // Muestro los datos para testeo
-    //print_r($datos);
-    // El json $datos es así si todo sale bien: 
-    /*{
-        "descripcion": "exito",
-        "estado": 200,
-        "datos": "https://opendata.aemet.es/opendata/sh/a15e753d",
-        "metadatos": "https://opendata.aemet.es/opendata/sh/93a7c63d"
-    }*/
-
-    if (isset($datos["estado"]) && str_starts_with((string)$datos["estado"], '4')) {
-        echo json_encode(["error" => $datos["descripcion"], "url" => $urlCompleta]);
-        exit();
-    }
-
-    $url = $datos["datos"];
-    $ch = curl_init($url);
-
-    // Configuro curl
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Devolver el resultado como texto
-
-    // Ejecuto la petición
-    $respuesta = curl_exec($ch);   // ya viene en $respuesta
-
-    if ($respuesta === false || trim($respuesta) === '') {
-        echo json_encode(["error" => "No se obtuvieron datos de la segunda url", "url" => $url]);
-        exit();
-    }
-
-    echo aUtf8Mixtos($respuesta);
-
-} catch (Exception $e) {
-    echo json_encode(["error" => "Se ha producido un error: " . $e]);
+    ApiResponse::jsonCrudo($prevision);
+} catch (ApiException $e) {
+    ApiResponse::desdeExcepcion($e);
+} catch (Throwable $e) {
+    error_log('[WebTiempo] ' . $e->getMessage());
+    ApiResponse::error('Se ha producido un error interno', 500);
 }

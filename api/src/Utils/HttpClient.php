@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Utils;
+
+use App\Exception\ApiException;
+
+/**
+ * Cliente HTTP minimo sobre cURL. Antes cada endpoint montaba su propio curl_init()
+ * sin timeout ni curl_close(), y hacia echo curl_error() sin exit, lo que producia
+ * doble cuerpo de respuesta cuando fallaba la llamada.
+ */
+final class HttpClient {
+
+    private const TIMEOUT = 10;
+    private const TIMEOUT_CONEXION = 5;
+
+    /**
+     * Realiza un GET y devuelve el cuerpo de la respuesta tal cual.
+     *
+     * @param string[] $cabeceras
+     */
+    public function get(string $url, array $cabeceras = []): string {
+        $manejador = curl_init($url);
+
+        if ($manejador === false) {
+            throw new ApiException('No se pudo iniciar la peticion HTTP', 500);
+        }
+
+        curl_setopt_array($manejador, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => self::TIMEOUT,
+            CURLOPT_CONNECTTIMEOUT => self::TIMEOUT_CONEXION,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTPHEADER => $cabeceras,
+        ]);
+
+        $respuesta = curl_exec($manejador);
+        $codigoError = curl_errno($manejador);
+        $descripcionError = curl_error($manejador);
+
+        curl_close($manejador);
+
+        if ($codigoError !== 0 || $respuesta === false) {
+            // El detalle va al log del servidor, nunca al cliente: curl_error()
+            // incluye la URL, y en OpenWeather la URL lleva la API key.
+            error_log('[WebTiempo] Error cURL: ' . $descripcionError);
+            throw ApiException::errorExterno('No se pudo contactar con el servicio de meteorologia');
+        }
+
+        return $respuesta;
+    }
+
+    /**
+     * Decodifica un JSON asumiendo UTF-8 y devuelve null si el cuerpo no es JSON valido.
+     *
+     * @return array<mixed>|null
+     */
+    public static function aArray(string $cuerpo): ?array {
+        $datos = json_decode(Encoding::aUtf8Mixtos($cuerpo), true);
+
+        return is_array($datos) ? $datos : null;
+    }
+}

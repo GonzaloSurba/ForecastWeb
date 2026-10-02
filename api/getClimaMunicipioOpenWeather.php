@@ -1,80 +1,43 @@
 <?php
 
-//error_reporting(E_ALL);
-//ini_set("display_errors", 1);
+/**
+ * Endpoint GET. Tiempo actual por coordenadas de OpenWeather.
+ *
+ * Acepta 'municipio' o bien 'latitud' + 'longitud', mas los opcionales 'lang' y 'units'.
+ * No contiene logica de negocio: resolver las coordenadas y pedir el tiempo es cosa de
+ * los Services.
+ */
 
-include_once('loadEnv.php');
-include_once('getMunicipio.php');
+require_once __DIR__ . '/src/bootstrap.php';
 
-$archivo = __DIR__ . '/config/MUNICIPIOS.csv';
-
-if (isset($_GET["municipio"])) {
-    $datosMunicipio = json_decode(buscarPorNombreLatLon($archivo, $_GET["municipio"]));
-
-    // buscarPorLatLon devuelve {"error": "..."} o [] si no encuentra municipio
-    if (isset($datosMunicipio[0]->error)) {
-        echo json_encode(["error" => $datosMunicipio[0]->error]);
-        exit();
-    }
-    if ((!isset($datosMunicipio[0]->LATITUD_ETRS89_REGCAN95)) || (!isset($datosMunicipio[0]->LONGITUD_ETRS89_REGCAN95))) {
-        echo json_encode(["error" => "No se ha podido determinar las coordenadas del municipio"]);
-        exit();
-    }
-
-    $latitud = $datosMunicipio[0]->LATITUD_ETRS89_REGCAN95;
-    $longitud = $datosMunicipio[0]->LONGITUD_ETRS89_REGCAN95;
-} else {
-    if (!isset($_GET["latitud"]) || empty($_GET["latitud"])) {
-        echo json_encode(["error" => "Falta el parámetro 'latitud'"]);
-        exit();
-    }
-    if (!isset($_GET["longitud"]) || empty($_GET["longitud"])) {
-        echo json_encode(["error" => "Falta el parámetro 'longitud'"]);
-        exit();
-    }
-    $latitud = $_GET["latitud"];
-    $longitud = $_GET["longitud"];
-}
-
-$lang = $_GET["lang"] ?? "es";
-$units = $_GET["units"] ?? "metric";
-
-header('Content-Type: application/json; charset=utf-8');
+use App\Exception\ApiException;
+use App\Http\ApiResponse;
+use App\Http\Request;
+use App\Services\MunicipioService;
+use App\Services\OpenWeatherService;
 
 try {
-    $datos = obtenerApiKeyOpenWeather();
-    $apikey = $datos["apikey"];
-    $url = $datos["url"];
-    $urlCompleta = str_replace('{lat}', $latitud, $url);
-    $urlCompleta = str_replace('{lon}', $longitud, $urlCompleta);
-    $urlCompleta = str_replace('{APIkey}', $apikey, $urlCompleta);
-    $urlCompleta = str_replace('{lang}', $lang, $urlCompleta);
-    $urlCompleta = str_replace('{units}', $units, $urlCompleta);
+    $municipios = new MunicipioService();
+    $municipio = Request::texto('municipio');
 
-    // Inicio curl
-    $ch = curl_init($urlCompleta);
-
-    // Configuro curl
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Devolver el resultado como texto
-
-    // Ejecuto la petición
-    $respuesta = curl_exec($ch);
-
-    // Compruebo si hubo errores
-    if (curl_errno($ch)) {
-        echo "Error: " . curl_error($ch);
+    if ($municipio !== null) {
+        [$latitud, $longitud] = $municipios->coordenadas($municipio);
+    } else {
+        $latitud = Request::numero('latitud');
+        $longitud = Request::numero('longitud');
     }
 
-    // Convierto el JSON recibido a un array de PHP
-    $datos = json_decode($respuesta, true);
+    $tiempo = (new OpenWeatherService())->tiempo(
+        $latitud,
+        $longitud,
+        Request::textoConDefecto('lang', 'es'),
+        Request::textoConDefecto('units', 'metric')
+    );
 
-    if (!isset($datos) || empty($datos)) {
-        echo json_encode(["error" => "No se obtuvieron datos", "url" => $urlCompleta]);
-        exit();
-    }
-
-    echo $respuesta;
-
-} catch (Exception $e) {
-    echo json_encode(["error" => "Se ha producido un error: " . $e]);
+    ApiResponse::jsonCrudo($tiempo);
+} catch (ApiException $e) {
+    ApiResponse::desdeExcepcion($e);
+} catch (Throwable $e) {
+    error_log('[WebTiempo] ' . $e->getMessage());
+    ApiResponse::error('Se ha producido un error interno', 500);
 }
