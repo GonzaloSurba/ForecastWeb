@@ -1,4 +1,18 @@
 export function cargarRadar({ latitud = 38.2926, longitud = -6.2062 }) {
+    const radarContainer = document.querySelector(".radar-image-wrapper")
+    if (!radarContainer) return
+
+    if (!radarContainer.querySelector("#mapa-radar")) {
+        // #mapa-radar es remplazado por los bloques del radar
+        // por lo que si quiero que se actualice en una búsqueda posterior a la primera
+        // necesito borrar el radar y volver a crear el div #mapa-radar
+        const mapaDiv = document.createElement("div")
+        mapaDiv.id = "mapa-radar"
+        mapaDiv.style = "width: 100%; height: 100%;"
+        radarContainer.innerHTML = ""
+        radarContainer.append(mapaDiv)
+    }
+
     const map = L.map('mapa-radar').setView([latitud, longitud], 7);
 
     // Añado mapa base (OpenStreetMap)

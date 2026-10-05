@@ -270,6 +270,28 @@ function obtenerPrediccionProximas12Horas(dias, fechaReferencia = new Date()) {
     return horasIndexadas.sort((a, b) => new Date(a.fechaHora) - new Date(b.fechaHora));
 }
 
+function actualizarBusquedasRecientes() {
+    const listaFrecuentes = document.querySelector(".buscador-frecuentes")
+    if (!listaFrecuentes) return
+
+    const itemsBorrar = listaFrecuentes.querySelectorAll("button")
+    if (!itemsBorrar) return
+    itemsBorrar.forEach(item => item.remove())
+
+    const listaBusquedas = JSON.parse(localStorage.getItem("busquedas"))
+    if (!listaBusquedas || listaBusquedas.length == 0) return
+
+    for (let municipio of listaBusquedas) {
+        const botonMunicipioFrecuente = document.createElement("button")
+        botonMunicipioFrecuente.textContent = municipio
+        botonMunicipioFrecuente.addEventListener("click", (e) => {
+            e.preventDefault()
+            obtenerDatosTiempo({ municipio: municipio })
+        })
+        listaFrecuentes.append(botonMunicipioFrecuente)
+    }
+}
+
 function getGeolocation() {
     navigator.geolocation.getCurrentPosition(function (position) {
         //console.log(position);
@@ -289,13 +311,27 @@ async function obtenerDatosTiempo({ municipio = null, latitud = null, longitud =
         return
     }
 
-    const datosTiempo = await getAemetData({ municipio: municipio, latitud: latitud, longitud: longitud })
-    const avisosTiempo = await getAvisosData({ municipio: municipio, latitud: latitud, longitud: longitud })
-    if (datosTiempo) {
-        mostrarDatosTiempo(datosTiempo["AEMET"], datosTiempo["OpenWeather"], avisosTiempo)
-    } else {
-        alert("No se han podido obtener los datos del tiempo")
+    if (localStorage.getItem("busquedas") && municipio) {
+        let busquedas = JSON.parse(localStorage.getItem("busquedas"))
+        busquedas = busquedas.filter(m => m != municipio)
+        busquedas.unshift(municipio)
+        if (busquedas.length > 5) {
+            busquedas.pop()
+        }
+        localStorage.setItem("busquedas", JSON.stringify(busquedas))
+    } else if (municipio) {
+        let busquedas = []
+        busquedas.unshift(municipio)
+        localStorage.setItem("busquedas", JSON.stringify(busquedas))
     }
+    actualizarBusquedasRecientes()
+
+    const datosTiempo = await getAemetData({ municipio: municipio, latitud: latitud, longitud: longitud })
+    if (!datosTiempo) return
+
+    const avisosTiempo = await getAvisosData({ municipio: municipio, latitud: latitud, longitud: longitud })
+    
+    mostrarDatosTiempo(datosTiempo["AEMET"], datosTiempo["OpenWeather"], avisosTiempo)
 }
 
 function mostrarDatosTiempo(datosAemet, datosOpenWeather = null, avisosTiempo = null) {
@@ -438,9 +474,6 @@ buscador.addEventListener("click", (e) => {
 const geolocalizarButton = document.querySelector(".buscador-ubicacion-button")
 geolocalizarButton.addEventListener("click", getGeolocation)
 
-actualizarReloj();
-setInterval(actualizarReloj, 1000);
-
 // Mapa de conversión (acepta tanto abreviaturas como nombres completos)
 const windDirections = {
     'N': 0,     'NORTE': 0,
@@ -468,4 +501,20 @@ function actualizarAgujaViento(direccionRecibida) {
     aguja.style.setProperty('--wind-deg', `${grados}deg`);
 }
 
-obtenerHorasLuz("08:19", "20:09")
+(function () {
+    actualizarReloj();
+    setInterval(actualizarReloj, 1000);
+
+    obtenerHorasLuz("08:19", "20:09")
+
+    actualizarBusquedasRecientes()
+
+    const modalInicio = document.querySelector("#modal-inicio")
+    modalInicio.showModal()
+
+    const cerrarModalInicio = document.querySelector("#modal-inicio-cerrar")
+    cerrarModalInicio.addEventListener("click", (e) => {
+        e.preventDefault()
+        modalInicio.close()
+    })
+})();

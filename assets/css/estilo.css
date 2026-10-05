@@ -715,7 +715,7 @@ nav {
 .buscador-ubicacion-button {
     display: flex;
     align-items: center;
-    background-color: #cce5ff;
+    background-color: var(--color-primary-fixed);
     border: none;
     border-radius: var(--radius-full);
     padding-inline: var(--space-md);
@@ -767,7 +767,7 @@ nav {
     }
 
     button:hover {
-        background-color: #cce5ff;
+        background-color: var(--color-primary-fixed);
     }
 }
 
@@ -1316,5 +1316,65 @@ footer {
     a {
         text-decoration: none;
         color: inherit;
+    }
+}
+
+#modal-inicio {
+    background-color: var(--color-surface-container-lowest);
+    border-radius: 1.5rem;
+    max-width: 40rem;
+    border: none;
+    box-shadow: 0 16px 40px rgba(0, 97, 148, 0.06);
+}
+
+#modal-inicio:active {
+    border: none;
+}
+
+.modal-inicio-container {
+    width: 100%;
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-lg);
+}
+
+.modal-inicio-title {
+    display: flex;
+    justify-content: center;
+
+    h3 {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.modal-inicio-content p {
+    text-align: justify;
+}
+
+.modal-inicio-end {
+
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    button {
+        background-color: var(--color-primary-fixed);
+        border: none;
+        border-radius: var(--radius-full);
+        padding: var(--space-md) var(--space-sm);
+        transition: background-color 0.2s ease;
+        cursor: pointer;
+        width: 70%;
+    }
+
+    button:hover {
+        background-color: var(--color-primary-fixed-dim);
+    }
+
+    button:active {
+        border: none;
     }
 }
