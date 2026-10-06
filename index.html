@@ -43,7 +43,7 @@
                 <div class="buscador-input-container">
                     <div class="buscador-input">
                         <i class="bi bi-search"></i>
-                        <input type="text" name="municipio" id="municipio" class="body-lg" placeholder="Introduce el nombre de un municipio o su código postal">
+                        <input type="text" name="municipio" id="municipio" class="body-lg" placeholder="Introduce el nombre de un municipio">
                         <button class="buscador-x-button">
                             <i class="bi bi-x-lg"></i>
                         </button>
@@ -54,6 +54,11 @@
                         <button class="buscador-arrow-button" id="buscar-municipio">
                             <i class="bi bi-arrow-right-short"></i>
                         </button>
+                    </div>
+                    <div class="buscador-input-dropdown-content">
+                        <a href="#">Sugerencia 1</a>
+                        <a href="#">Sugerencia 2</a>
+                        <a href="#">Sugerencia 3</a>
                     </div>
                 </div>
                 <div class="buscador-frecuentes">
@@ -72,12 +77,6 @@
                     <strong class="label-lg">Aviso meteorológico: </strong>
                     <span id="avisoMeteorologico">Cielo con nubosidad alta variable. Ventilación favorable en el cuadrante suroeste.</span>
                 </p>
-                <div class="aviso-ica">
-                    <p class="label-caps">
-                        <span class="punto"></span>
-                        ICA 24 • Calidad Óptima
-                    </p>
-                </div>
             </div>
         </section>
 
@@ -95,8 +94,8 @@
                             <div class="badge-group">
                                 <div class="badge badge-surface label-md">
                                     <i class="bi bi-geo-alt"></i>
-                                    <span class="font-semibold" id="nombreMunicipio">Bienvenida, ES</span>
-                                    <span class="badge-tag" id="nombreProvincia">Badajoz, Extremadura</span>
+                                    <span class="font-semibold" id="nombreMunicipio">Bienvenida</span>
+                                    <span class="badge-tag" id="nombreProvincia">Badajoz</span>
                                 </div>
                                 <div class="badge badge-surface-subtle label-md">
                                     <i class="bi bi-clock-history"></i>
@@ -127,17 +126,13 @@
 
                             <!-- Pills meta -->
                             <div class="pill-group label-md">
-                                <span class="pill pill-surface">
-                                <i class="bi bi-check-circle"></i>
-                                Condición estable
-                                </span>
-                                <span class="pill pill-warning">
-                                <i class="bi bi-sun"></i>
-                                Índice UV 6 (Moderado)
+                                <span class="pill pill-buena">
+                                    <span class="punto"></span>
+                                    ICA 10 <span class="punto"></span> Buena
                                 </span>
                                 <span class="pill pill-surface">
-                                <i class="bi bi-wind"></i>
-                                Viento: <span class="descripcionViento">Brisa agradable</span>
+                                    <i class="bi bi-wind"></i>
+                                    Viento: <span class="descripcionViento">Brisa agradable</span>
                                 </span>
                             </div>
                         </div>

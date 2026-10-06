@@ -3,7 +3,7 @@
  * eso lo hace miscript.js.
  */
 
-async function pedirClima(url, { avisar = true } = {}) {
+async function pedirDatos(url, { avisar = true } = {}) {
     const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -40,7 +40,7 @@ async function getOpenWeatherData(municipio, latitud, longitud) {
 
         // No se avisa de los fallos aqui: OpenWeather es un dato complementario y un
         // fallo suyo no debe interrumpir la prediccion de AEMET, que ya se ha pintado.
-        return await pedirClima(`api/getClimaMunicipioOpenWeather.php?${parametros}`, { avisar: false })
+        return await pedirDatos(`api/getClimaMunicipioOpenWeather.php?${parametros}`, { avisar: false })
     } catch (error) {
         console.error("Se ha producido un error al obtener el tiempo:", error.message)
         return null
@@ -62,16 +62,18 @@ export async function getAvisosData({ municipio = null, latitud = null, longitud
     }
 
     try {
-        return await pedirClima(url)
+        return await pedirDatos(url)
     } catch (error) {
         console.error("Se ha producido un error al obtener los avisos:", error.message)
         return null
     }
 }
 
-export async function getAemetData({ municipio = null, latitud = null, longitud = null }) {
+export async function getAemetData({ municipio = null, latitud = null, longitud = null, codigoINE = null }) {
     let url
-    if (municipio) {
+    if (codigoINE) {
+        url = `api/getClimaMunicipioAemet.php?codine=${encodeURIComponent(codigoINE)}`
+    } else if (municipio) {
         url = `api/getClimaMunicipioAemet.php?municipio=${encodeURIComponent(municipio)}`
     } else if (latitud && longitud) {
         url = `api/getClimaMunicipioAemet.php?latitud=${encodeURIComponent(latitud)}&longitud=${encodeURIComponent(longitud)}`
@@ -81,11 +83,9 @@ export async function getAemetData({ municipio = null, latitud = null, longitud 
     }
 
     try {
-        const datos = await pedirClima(url)
+        const datos = await pedirDatos(url)
 
-        if (!datos) {
-            return
-        }
+        if (!datos) return
 
         return {
             "AEMET": datos,
@@ -93,5 +93,18 @@ export async function getAemetData({ municipio = null, latitud = null, longitud 
         }
     } catch (error) {
         console.error("Se ha producido un error al obtener el tiempo:", error.message)
+    }
+}
+
+export async function getMunicipios(municipio) {
+    try {
+        const datos = await pedirDatos(`api/getMunicipios.php?municipio=${encodeURIComponent(municipio)}`, { avisar: true })
+
+        if (!datos) return
+
+        return datos
+    } catch (error) {
+        console.error("Se ha producido un error al obtener los municipios:", error.message)
+        return null
     }
 }

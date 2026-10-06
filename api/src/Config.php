@@ -13,6 +13,7 @@ final class Config {
     private const URL_AEMET = 'AEMET_API_URL';
     private const CLAVE_OPEN_WEATHER = 'OPEN_WEATHER_API_KEY';
     private const URL_OPEN_WEATHER = 'OPEN_WEATHER_API_URL';
+    private const URL_CARTO_CIUDAD = 'CARTO_CIUDAD_API_URL';
 
     private function __construct() {}
 
@@ -29,6 +30,13 @@ final class Config {
         return [
             'apikey' => self::requerido(self::CLAVE_OPEN_WEATHER),
             'url' => self::requerido(self::URL_OPEN_WEATHER),
+        ];
+    }
+
+    /** @return array{apikey: string, url: string} */
+    public static function cartoCiudad(): array {
+        return [
+            'url' => self::requerido(self::URL_CARTO_CIUDAD),
         ];
     }
 

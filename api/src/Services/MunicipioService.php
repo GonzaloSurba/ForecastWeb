@@ -58,7 +58,7 @@ final class MunicipioService {
             }
         }
 
-        throw ApiException::noEncontrado("No se encontro el municipio '$nombre'");
+        throw ApiException::noEncontrado("No se encontró el municipio '$nombre'");
     }
 
     /**

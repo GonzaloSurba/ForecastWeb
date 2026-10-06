@@ -1,4 +1,4 @@
-import { getAemetData, getAvisosData } from "./api.js";
+import { getAemetData, getAvisosData, getMunicipios } from "./api.js";
 import { cargarRadar } from "./radar.js";
 
 const horaActual = new Date().getHours()
@@ -305,11 +305,52 @@ function getGeolocation() {
     })
 }
 
-async function obtenerDatosTiempo({ municipio = null, latitud = null, longitud = null }) {
-    if (!municipio && (!latitud || !longitud)) {
-        alert("Debes introducir un nombre o usar tu ubicación para buscar el tiempo de un municipio")
+function mostrarResultados(resultados) {
+    const desplegable = document.querySelector(".buscador-input-dropdown-content")
+    desplegable.innerHTML = ""
+
+    const resultadosUnicos = new Map()
+
+    resultados.forEach((resultado) => {
+        // Un municipio puede englobar una o varias poblaciones.
+        // Normalmente la población principal se llama igual que el municipio,
+        // por lo que aquí evito duplicados
+        const nombreMunicipio = resultado["poblacion"] ?? resultado["muni"]
+
+        if (!resultadosUnicos.has(nombreMunicipio)) {
+            resultadosUnicos.set(nombreMunicipio, resultado);
+        } else {
+            // Priorizo población sobre municipio
+            const itemExistente = resultadosUnicos.get(nombreMunicipio);
+            if (resultado["type"] === "poblacion" && itemExistente["type"] === "Municipio") {
+                resultadosUnicos.set(nombreMunicipio, resultado);
+            }
+        }
+    })
+
+    const listResultados = Array.from(resultadosUnicos.values())
+    for (let resultado of listResultados) {
+        const nombreMunicipio = resultado["poblacion"] ?? resultado["muni"]
+        const sugerencia = document.createElement("a")
+        sugerencia.textContent = `${nombreMunicipio}, ${resultado["province"]}, ${resultado["comunidadAutonoma"]}`
+        sugerencia.addEventListener("click", (e) => {
+            e.preventDefault()
+            obtenerDatosTiempo({ municipio: nombreMunicipio, codigoINE: resultado["muniCode"], municipioPrincipal: resultado["muni"] })
+        })
+        desplegable.append(sugerencia)
+    }
+
+    desplegable.style.display = "block"
+}
+
+async function obtenerDatosTiempo({ municipio = null, latitud = null, longitud = null, codigoINE = null, municipioPrincipal = null }) {
+    if (!municipio && !codigoINE && (!latitud || !longitud)) {
+        alert("Debes introducir un nombre, codigo INE o usar tu ubicación para buscar el tiempo de un municipio")
         return
     }
+
+    const desplegable = document.querySelector(".buscador-input-dropdown-content")
+    desplegable.style.display = "none"
 
     if (localStorage.getItem("busquedas") && municipio) {
         let busquedas = JSON.parse(localStorage.getItem("busquedas"))
@@ -324,14 +365,26 @@ async function obtenerDatosTiempo({ municipio = null, latitud = null, longitud =
         busquedas.unshift(municipio)
         localStorage.setItem("busquedas", JSON.stringify(busquedas))
     }
+
     actualizarBusquedasRecientes()
 
-    const datosTiempo = await getAemetData({ municipio: municipio, latitud: latitud, longitud: longitud })
+    const datosTiempo = await getAemetData({ municipio: municipioPrincipal ?? municipio, latitud: latitud, longitud: longitud, codigoINE: codigoINE })
     if (!datosTiempo) return
 
-    const avisosTiempo = await getAvisosData({ municipio: municipio, latitud: latitud, longitud: longitud })
+    const avisosTiempo = await getAvisosData({ municipio: municipioPrincipal ?? municipio, latitud: latitud, longitud: longitud })
     
     mostrarDatosTiempo(datosTiempo["AEMET"], datosTiempo["OpenWeather"], avisosTiempo)
+}
+
+async function buscarMunicipiosYPoblaciones(municipio) {
+    const resultados = await getMunicipios(municipio)
+    if (!resultados) return
+    if (resultados["CPRO"] && resultados["CMUN"]) {
+        // En caso de tener una respuesta del CSV en vez de la API
+        obtenerDatosTiempo({ municipio: municipio })
+        return
+    }
+    mostrarResultados(resultados)
 }
 
 function mostrarDatosTiempo(datosAemet, datosOpenWeather = null, avisosTiempo = null) {
@@ -454,26 +507,6 @@ function actualizarReloj() {
     document.querySelector("time").textContent = horaActualCompleta;
 }
 
-const limpiarBuscador = document.querySelector(".buscador-x-button")
-limpiarBuscador.addEventListener("click", (e) => {
-    e.preventDefault()
-    document.querySelector("#municipio").value = ""
-})
-
-const buscador = document.querySelector("#buscar-municipio")
-buscador.addEventListener("click", (e) => {
-    e.preventDefault()
-    let municipioABuscar = document.querySelector("#municipio").value
-    if(!municipioABuscar) {
-        alert("Debes introducir un municipio")
-        return
-    }
-    obtenerDatosTiempo({ municipio: municipioABuscar })
-})
-
-const geolocalizarButton = document.querySelector(".buscador-ubicacion-button")
-geolocalizarButton.addEventListener("click", getGeolocation)
-
 // Mapa de conversión (acepta tanto abreviaturas como nombres completos)
 const windDirections = {
     'N': 0,     'NORTE': 0,
@@ -517,4 +550,24 @@ function actualizarAgujaViento(direccionRecibida) {
         e.preventDefault()
         modalInicio.close()
     })
+
+    const limpiarBuscador = document.querySelector(".buscador-x-button")
+    limpiarBuscador.addEventListener("click", (e) => {
+        e.preventDefault()
+        document.querySelector("#municipio").value = ""
+    })
+
+    const buscador = document.querySelector("#buscar-municipio")
+    buscador.addEventListener("click", (e) => {
+        e.preventDefault()
+        let municipioABuscar = document.querySelector("#municipio").value
+        if (!municipioABuscar) {
+            alert("Debes introducir un municipio")
+            return
+        }
+        buscarMunicipiosYPoblaciones(municipioABuscar)
+    })
+
+    const geolocalizarButton = document.querySelector(".buscador-ubicacion-button")
+    geolocalizarButton.addEventListener("click", getGeolocation)
 })();
