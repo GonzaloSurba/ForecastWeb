@@ -1,4 +1,4 @@
-import { getAemetData, getAvisosData, getMunicipios } from "./api.js";
+import { getAemetData, getAvisosData, getIcaData, getMunicipios } from "./api.js";
 import { cargarRadar } from "./radar.js";
 
 const horaActual = new Date().getHours()
@@ -374,6 +374,16 @@ async function obtenerDatosTiempo({ municipio = null, latitud = null, longitud =
     const avisosTiempo = await getAvisosData({ municipio: municipioPrincipal ?? municipio, latitud: latitud, longitud: longitud })
     
     mostrarDatosTiempo(datosTiempo["AEMET"], datosTiempo["OpenWeather"], avisosTiempo)
+
+    // El ICA depende de la posicion, no de AEMET: se pide con las coordenadas de
+    // OpenWeather si vienen y si no con el nombre, para que tambien funcione al
+    // geolocalizar o cuando OpenWeather falla.
+    const ica = await getIcaData({
+        municipio: municipio,
+        latitud: datosTiempo["OpenWeather"]?.coord?.lat ?? latitud,
+        longitud: datosTiempo["OpenWeather"]?.coord?.lon ?? longitud,
+    })
+    mostrarIca(ica)
 }
 
 async function buscarMunicipiosYPoblaciones(municipio) {
@@ -487,6 +497,59 @@ function mostrarDatosTiempo(datosAemet, datosOpenWeather = null, avisosTiempo = 
         padre.append(clon)
     }
 
+}
+
+// Variantes de color del pill del ICA, alineadas con las categorias oficiales
+// de MITECO y con las clases de estilo.css.
+const VARIANTES_ICA = [
+    "pill-ica-buena",
+    "pill-ica-razonablemente-buena",
+    "pill-ica-regular",
+    "pill-ica-desfavorable",
+    "pill-ica-muy-desfavorable",
+    "pill-ica-extremadamente-desfavorable",
+    "pill-ica-sin-datos",
+]
+
+function mostrarIca(ica) {
+    const pill = document.querySelector("#pillIca")
+    if (!pill) return
+
+    // Sin estacion dentro del radio no hay nada que informar: se oculta el pill
+    // entero en vez de dejar en pantalla el ICA del municipio anterior.
+    if (!ica) {
+        pill.style.display = "none"
+        return
+    }
+
+    pill.style.display = ""
+
+    const categoria = ica.categoria.toLowerCase().replace(/\s+/g, "-")
+    VARIANTES_ICA.forEach(variante => pill.classList.remove(variante))
+    pill.classList.add(`pill-ica-${categoria}`)
+
+    document.querySelector("#nivelIca").textContent = ica.indice
+    document.querySelector("#categoriaIca").textContent = ica.categoria
+
+    // La fecha del CSV viene en UTC sin sufijo: se etiqueta como tal para no
+    // presentar la hora local del navegador como si fuera la de la medicion.
+    const fechaMedicion = new Date(`${ica.fecha}Z`).toLocaleString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "UTC",
+    })
+
+    const detalle = [
+        `Estación ${ica.estacion.nombre} (${ica.estacion.tipo}) a ${String(ica.distancia_km).replace(".", ",")} km`,
+        ica.debido_a ? `contaminante ${ica.debido_a}` : null,
+        `medido el ${fechaMedicion} UTC`,
+        ica.parcial ? "dato parcial: calculado con menos contaminantes" : null,
+    ].filter(Boolean)
+
+    pill.title = detalle.join(" • ")
 }
 
 function actualizarReloj() {

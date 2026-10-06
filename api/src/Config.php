@@ -14,6 +14,7 @@ final class Config {
     private const CLAVE_OPEN_WEATHER = 'OPEN_WEATHER_API_KEY';
     private const URL_OPEN_WEATHER = 'OPEN_WEATHER_API_URL';
     private const URL_CARTO_CIUDAD = 'CARTO_CIUDAD_API_URL';
+    private const URL_ICA = 'ICA_ULTIMA_HORA_URL';
 
     private function __construct() {}
 
@@ -37,6 +38,13 @@ final class Config {
     public static function cartoCiudad(): array {
         return [
             'url' => self::requerido(self::URL_CARTO_CIUDAD),
+        ];
+    }
+
+    /** @return array{url: string} */
+    public static function ica(): array {
+        return [
+            'url' => self::requerido(self::URL_ICA),
         ];
     }
 

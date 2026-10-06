@@ -986,14 +986,28 @@ nav {
     }
 }
 
-.pill-buena {
-    background-color: rgb(from var(--color-tertiary) r g b / 10%);
-    color: var(--color-tertiary);
-
-    .punto {
-        background-color: var(--color-tertiary) !important;
-    }
+/*  
+    Pill del ICA.
+    El color de cada categoria es el oficial de MITECO y se aplica al punto y al
+    fondo; el texto va oscurecido porque los colores oficiales no tienen contraste
+    suficiente sobre blanco (el amarillo de "Regular" sería ilegible).
+*/
+.pill-ica {
+    background-color: rgb(from var(--color-ica) r g b / 10%);
+    color: color-mix(in srgb, var(--color-ica) 60%, black);
 }
+
+.pill-ica .punto {
+    background-color: var(--color-ica);
+}
+
+.pill-ica-buena { --color-ica: rgb(56 162 206); }
+.pill-ica-razonablemente-buena { --color-ica: rgb(50 161 94); }
+.pill-ica-regular { --color-ica: rgb(241 229 73); }
+.pill-ica-desfavorable { --color-ica: rgb(200 52 65); }
+.pill-ica-muy-desfavorable { --color-ica: rgb(110 22 29); }
+.pill-ica-extremadamente-desfavorable { --color-ica: rgb(162 91 164); }
+.pill-ica-sin-datos { --color-ica: rgb(85 89 93); }
 
 .pill-surface {
     background-color: var(--color-surface-container);

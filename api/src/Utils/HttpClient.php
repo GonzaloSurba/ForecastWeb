@@ -18,8 +18,11 @@ final class HttpClient {
      * Realiza un GET y devuelve el cuerpo de la respuesta tal cual.
      *
      * @param string[] $cabeceras
+     * @param string|null $cainfo Ruta a un bundle CA propio para esta peticion,
+     *                            para servidores cuya cadena de certificados no
+     *                            completa el store del sistema (p. ej. MITECO).
      */
-    public function get(string $url, array $cabeceras = []): string {
+    public function get(string $url, array $cabeceras = [], ?string $cainfo = null): string {
         $manejador = curl_init($url);
 
         if ($manejador === false) {
@@ -33,6 +36,10 @@ final class HttpClient {
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTPHEADER => $cabeceras,
         ]);
+
+        if ($cainfo !== null) {
+            curl_setopt($manejador, CURLOPT_CAINFO, $cainfo);
+        }
 
         $respuesta = curl_exec($manejador);
         $codigoError = curl_errno($manejador);

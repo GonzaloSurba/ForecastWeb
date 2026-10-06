@@ -108,3 +108,31 @@ export async function getMunicipios(municipio) {
         return null
     }
 }
+
+/**
+ * ICA de la estacion meteorologica más cercana. Devuelve null si no hay estación
+ * en el radio o si el servicio falla, y no avisa: es un dato complementario y su
+ * ausencia no debe interrumpir la predicción que ya se ha pintado.
+ *
+ * Se prefieren las coordenadas al nombre: los municipios tienen estación propia,
+ * pero una población puede no estar en el CSV de municipios.
+ */
+export async function getIcaData({ municipio = null, latitud = null, longitud = null }) {
+    let url
+    if (latitud != null && longitud != null) {
+        url = `api/getIcaMunicipio.php?latitud=${encodeURIComponent(latitud)}&longitud=${encodeURIComponent(longitud)}`
+    } else if (municipio) {
+        url = `api/getIcaMunicipio.php?municipio=${encodeURIComponent(municipio)}`
+    } else {
+        return null
+    }
+
+    try {
+        const datos = await pedirDatos(url, { avisar: false })
+
+        return datos?.ica ?? null
+    } catch (error) {
+        console.error("Se ha producido un error al obtener el ICA:", error.message)
+        return null
+    }
+}
