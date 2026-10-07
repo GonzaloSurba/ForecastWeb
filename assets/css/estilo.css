@@ -218,15 +218,15 @@ button {
 }
 
 /* ================================================================
-   COMPONENTES COMPARTIDOS
-   Primitivas reutilizadas por las secciones de métricas, telemetría
-   y franja horaria.
+    COMPONENTES COMPARTIDOS
+    Primitivas reutilizadas por las secciones de métricas, telemetría
+    y franja horaria.
    ================================================================ */
 
 /* ---------- Cabecera de sección ---------- */
 .section-title {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     gap: var(--space-sm);
 }
@@ -248,8 +248,15 @@ button {
 }
 
 .section-title-aside {
+    display: none;
     margin-left: auto;
     color: var(--color-on-surface-variant);
+}
+
+@media (min-width: 768px) {
+    .section-title-aside {
+        display: block;
+    }
 }
 
 /* ---------- Tarjeta ---------- */
@@ -502,10 +509,10 @@ button {
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 50%;
-    background-color: var(--color-primary);
+    background-color: var(--color-on-surface);
 }
 
-.legend-item-lluvia::before { background-color: var(--color-primary-fixed-dim); }
+.legend-item-lluvia::before { background-color: var(--color-primary); }
 
 /* ---------- Slot horario ---------- */
 .slot {
@@ -608,7 +615,7 @@ header {
 }
 
 nav {
-    display: flex;
+    display: none;
     padding: 0.25rem;
     gap: var(--space-xs);
     background-color: #eff4ff;
@@ -625,6 +632,12 @@ nav {
 
     a:hover {
         background-color: #dce9ff;
+    }
+}
+
+@media (min-width: 768px) {
+    nav {
+        display: flex;
     }
 }
 
@@ -780,6 +793,7 @@ nav {
 
 .buscador-frecuentes {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--space-md);
     padding-top: var(--space-sm);
@@ -1264,19 +1278,16 @@ nav {
     padding-bottom: var(--space-xl);
 }
 
-.horaria-cabecera {
-    flex-direction: column;
-    align-items: flex-start;
+.horaria-legend { 
+    display: none;
+    margin-left: auto;
 }
 
 @media (min-width: 640px) {
-    .horaria-cabecera {
-        flex-direction: row;
-        align-items: center;
+    .horaria-legend {
+        display: flex;
     }
 }
-
-.horaria-legend { margin-left: auto; }
 
 .horaria-pista {
     overflow-x: auto;
@@ -1320,6 +1331,7 @@ nav {
 
 .horaria-link:hover { color: var(--color-primary); }
 
+/* Footer */
 footer {
     width: 100%;
     background-color: rgb(from var(--color-surface-container-low) r g b / 70%);
@@ -1330,6 +1342,7 @@ footer {
     width: 100%;
     padding-inline: var(--layout-margin);
     display: flex;
+    flex-direction: column;
     gap: var(--space-md);
     align-items: center;
     justify-content: space-between;
@@ -1338,6 +1351,10 @@ footer {
         display: flex;
         align-items: center;
         gap: var(--space-md);
+    }
+
+    div:last-child {
+        flex-direction: column-reverse;
     }
 
     img {
@@ -1350,9 +1367,21 @@ footer {
     }
 }
 
+@media (min-width: 768px) {
+    .footer-container {
+        flex-direction: row;
+
+        div:last-child {
+            flex-direction: row;
+        }
+    }
+}
+
+/* Modal de avisos */
 #modal-inicio {
     background-color: var(--color-surface-container-lowest);
     border-radius: 1.5rem;
+    width: 95%;
     max-width: 40rem;
     border: none;
     box-shadow: 0 16px 40px rgba(0, 97, 148, 0.06);

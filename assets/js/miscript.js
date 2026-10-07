@@ -2,6 +2,7 @@ import { getAemetData, getAvisosData, getIcaData, getMunicipios } from "./api.js
 import { cargarRadar } from "./radar.js";
 
 const horaActual = new Date().getHours()
+let datosReporte = null
 
 function calcularFecha(fecha) {
     const fechaObjetivo = new Date(fecha);
@@ -279,7 +280,10 @@ function actualizarBusquedasRecientes() {
     itemsBorrar.forEach(item => item.remove())
 
     const listaBusquedas = JSON.parse(localStorage.getItem("busquedas"))
-    if (!listaBusquedas || listaBusquedas.length == 0) return
+    if (!listaBusquedas || listaBusquedas.length == 0) {
+        listaFrecuentes.style.display = "none"
+        return
+    }
 
     for (let municipio of listaBusquedas) {
         const botonMunicipioFrecuente = document.createElement("button")
@@ -290,6 +294,8 @@ function actualizarBusquedasRecientes() {
         })
         listaFrecuentes.append(botonMunicipioFrecuente)
     }
+
+    listaFrecuentes.style.display = "flex"
 }
 
 function getGeolocation() {
@@ -384,6 +390,16 @@ async function obtenerDatosTiempo({ municipio = null, latitud = null, longitud =
         longitud: datosTiempo["OpenWeather"]?.coord?.lon ?? longitud,
     })
     mostrarIca(ica)
+
+    datosReporte = {
+        fechaExportacion: new Date().toISOString(),
+        municipio: municipioPrincipal ?? municipio,
+        latitud, longitud,
+        AEMET: datosTiempo["AEMET"],
+        OpenWeather: datosTiempo["OpenWeather"],
+        avisos: avisosTiempo,
+        ica,
+    }
 }
 
 async function buscarMunicipiosYPoblaciones(municipio) {
@@ -416,7 +432,12 @@ function mostrarDatosTiempo(datosAemet, datosOpenWeather = null, avisosTiempo = 
 
     // Aviso meteorológico
     if (avisosTiempo && (avisosTiempo?.avisos).length > 0) {
-        document.querySelector("#avisoMeteorologico").textContent = `${avisosTiempo.avisos[0].cabecera}. ${avisosTiempo.avisos[0].descripcion}`
+        const fechaInicioAviso = new Date(avisosTiempo.avisos[0].inicio)
+        const strFechaInicioAviso = fechaInicioAviso ? 
+            `(${fechaInicioAviso.getDate()}/${fechaInicioAviso.getMonth() + 1}/${fechaInicioAviso.getFullYear()})`
+            : ""
+        document.querySelector("#avisoMeteorologico").textContent = 
+            `${avisosTiempo.avisos[0].cabecera}. ${avisosTiempo.avisos[0].descripcion} ${strFechaInicioAviso}`
         document.querySelector(".aviso-tiempo-hoy-section").style.display = "inline"
     }
 
@@ -633,4 +654,19 @@ function actualizarAgujaViento(direccionRecibida) {
 
     const geolocalizarButton = document.querySelector(".buscador-ubicacion-button")
     geolocalizarButton.addEventListener("click", getGeolocation)
+
+    document.querySelector(".horaria-link").addEventListener("click", (e) => {
+        e.preventDefault()
+        if (!datosReporte) {
+            alert("Primero busca un municipio para exportar el reporte")
+            return
+        }
+        const blob = new Blob([JSON.stringify(datosReporte, null, 2)], { type: "application/json" })
+        const url = URL.createObjectURL(blob)
+        const enlace = document.createElement("a")
+        enlace.href = url
+        enlace.download = `reporte-tiempo-${datosReporte.municipio}-${new Date().toISOString().slice(0, 10)}.json`
+        enlace.click()
+        URL.revokeObjectURL(url)
+    })
 })();
