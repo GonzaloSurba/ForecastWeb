@@ -377,7 +377,7 @@ async function obtenerDatosTiempo({ municipio = null, latitud = null, longitud =
     const datosTiempo = await getAemetData({ municipio: municipioPrincipal ?? municipio, latitud: latitud, longitud: longitud, codigoINE: codigoINE })
     if (!datosTiempo) return
 
-    const avisosTiempo = await getAvisosData({ municipio: municipioPrincipal ?? municipio, latitud: latitud, longitud: longitud })
+    const avisosTiempo = await getAvisosData({ municipio: municipioPrincipal ?? municipio, latitud: latitud, longitud: longitud, codigoINE: codigoINE })
     
     mostrarDatosTiempo(datosTiempo["AEMET"], datosTiempo["OpenWeather"], avisosTiempo)
 
@@ -665,7 +665,13 @@ function actualizarAgujaViento(direccionRecibida) {
         const url = URL.createObjectURL(blob)
         const enlace = document.createElement("a")
         enlace.href = url
-        enlace.download = `reporte-tiempo-${datosReporte.municipio}-${new Date().toISOString().slice(0, 10)}.json`
+        // El nombre del municipio puede traer barras o caracteres que rompen el
+        // nombre del fichero: se deja solo letras, numeros, espacios y guiones.
+        const municipioSeguro = (String(datosReporte.municipio ?? "municipio")
+            .replace(/[^\p{L}\p{N} ]+/gu, "-")
+            .replace(/^-+|-+$/g, "")
+            .trim()) || "municipio"
+        enlace.download = `reporte-tiempo-${municipioSeguro}-${new Date().toISOString().slice(0, 10)}.json`
         enlace.click()
         URL.revokeObjectURL(url)
     })

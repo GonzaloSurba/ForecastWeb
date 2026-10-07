@@ -51,9 +51,13 @@ async function getOpenWeatherData(municipio, latitud, longitud) {
  * Avisos Meteoalerta del municipio. Devuelve null si la consulta falla, lo cual no es
  * lo mismo que un municipio sin avisos: quien lo llame tiene que poder distinguirlos.
  */
-export async function getAvisosData({ municipio = null, latitud = null, longitud = null }) {
+export async function getAvisosData({ municipio = null, latitud = null, longitud = null, codigoINE = null }) {
     let url
-    if (municipio) {
+    if (codigoINE && municipio) {
+        url = `api/getAvisosMunicipio.php?codine=${encodeURIComponent(codigoINE)}&municipio=${encodeURIComponent(municipio)}`
+    } else if (codigoINE) {
+        url = `api/getAvisosMunicipio.php?codine=${encodeURIComponent(codigoINE)}`
+    } else if (municipio) {
         url = `api/getAvisosMunicipio.php?municipio=${encodeURIComponent(municipio)}`
     } else if (latitud && longitud) {
         url = `api/getAvisosMunicipio.php?latitud=${encodeURIComponent(latitud)}&longitud=${encodeURIComponent(longitud)}`
@@ -71,7 +75,9 @@ export async function getAvisosData({ municipio = null, latitud = null, longitud
 
 export async function getAemetData({ municipio = null, latitud = null, longitud = null, codigoINE = null }) {
     let url
-    if (codigoINE) {
+    if (codigoINE && municipio) {
+        url = `api/getClimaMunicipioAemet.php?codine=${encodeURIComponent(codigoINE)}&municipio=${encodeURIComponent(municipio)}`
+    } else if (codigoINE) {
         url = `api/getClimaMunicipioAemet.php?codine=${encodeURIComponent(codigoINE)}`
     } else if (municipio) {
         url = `api/getClimaMunicipioAemet.php?municipio=${encodeURIComponent(municipio)}`

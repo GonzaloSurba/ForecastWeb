@@ -3,7 +3,7 @@
 /**
  * Endpoint GET. Avisos Meteoalerta de AEMET vigentes o proximos para un municipio.
  *
- * Acepta 'municipio' o bien 'latitud' + 'longitud'. No contiene logica de negocio:
+ * Acepta 'municipio', 'codine' o bien 'latitud' + 'longitud'. No contiene logica de negocio:
  * resolver el municipio, buscar su zona Meteoalerta y pedir los avisos es cosa de los
  * Services.
  */
@@ -20,26 +20,33 @@ use App\Services\ZonaMeteoalertaService;
 try {
     $municipios = new MunicipioService();
     $nombre = Request::texto('municipio');
+    $codine = Request::codigoINE('codine');
 
-    if ($nombre === null) {
-        if (Request::texto('latitud') === null || Request::texto('longitud') === null) {
-            throw ApiException::peticionInvalida(
-                "Faltan los parametros 'municipio' o 'latitud' y 'longitud'"
+    if ($codine === null) {
+        if ($nombre === null) {
+            if (Request::texto('latitud') === null || Request::texto('longitud') === null) {
+                throw ApiException::peticionInvalida(
+                    "Faltan los parametros 'municipio', 'codine' o 'latitud' y 'longitud'"
+                );
+            }
+
+            $nombre = $municipios->nombrePorCoordenadas(
+                Request::numero('latitud'),
+                Request::numero('longitud')
             );
         }
-
-        $nombre = $municipios->nombrePorCoordenadas(
-            Request::numero('latitud'),
-            Request::numero('longitud')
-        );
     }
 
-    $zona = (new ZonaMeteoalertaService())->zonaDe($municipios->codigoIne($nombre));
+    $codigoIne = $codine ?? $municipios->codigoIne($nombre);
+    $zona = (new ZonaMeteoalertaService())->zonaDe($codigoIne);
 
     // Sin zona no hay forma de saber que avisos afectan al municipio, pero tampoco es un
     // fallo de la peticion: se responde 200 con la lista vacia y se avisa al log.
     if ($zona === null) {
-        error_log("[WebTiempo] El municipio '$nombre' no tiene zona Meteoalerta en la tabla");
+        // El nombre viene del cliente: sin filtrar los saltos de linea permitiría
+        // inventar lineas falsas en el log del servidor.
+        $nombreLog = str_replace(["\r", "\n"], ' ', $nombre ?? $codine);
+        error_log("[WebTiempo] El municipio '$nombreLog' no tiene zona Meteoalerta en la tabla");
 
         $avisos = [];
     } else {

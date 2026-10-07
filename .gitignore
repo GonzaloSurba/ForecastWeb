@@ -24,3 +24,5 @@ tailwind-script.html
 
 # Logs y errores de PHP
 *.log
+
+.htaccess

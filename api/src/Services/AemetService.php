@@ -53,6 +53,12 @@ final class AemetService {
             throw ApiException::errorExterno('AEMET no ha devuelto la direccion de los datos');
         }
 
+        // La segunda url la decide AEMET: antes de descargarla se comprueba que sea
+        // del propio dominio, por si la respuesta viniera manipulada.
+        if (!self::esUrlDeAemet($urlDatos, $config['url'])) {
+            throw ApiException::errorExterno('AEMET ha devuelto una direccion de datos inesperada');
+        }
+
         $cuerpo = $this->http->get($urlDatos);
 
         if (trim($cuerpo) === '') {
@@ -68,5 +74,23 @@ final class AemetService {
         }
 
         return $cuerpo;
+    }
+
+    /**
+     * true si la url es http(s) y su host es el de la API configurada o un
+     * subdominio de aemet.es.
+     */
+    private static function esUrlDeAemet(string $url, string $urlConfigurada): bool {
+        $esquema = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+        $host = strtolower((string) parse_url($url, PHP_URL_HOST));
+        $hostConfigurado = strtolower((string) parse_url($urlConfigurada, PHP_URL_HOST));
+
+        if (!in_array($esquema, ['http', 'https'], true) || $host === '') {
+            return false;
+        }
+
+        return $host === $hostConfigurado
+            || $host === 'aemet.es'
+            || str_ends_with($host, '.aemet.es');
     }
 }

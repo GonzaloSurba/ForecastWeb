@@ -3,7 +3,7 @@
 /**
  * Endpoint GET. Prevision horaria por municipio de AEMET.
  *
- * Acepta 'municipio' o bien 'latitud' + 'longitud'. No contiene logica de negocio:
+ * Acepta 'municipio', 'codine' o bien 'latitud' + 'longitud'. No contiene logica de negocio:
  * resolver el municipio y pedir la prediccion es cosa de los Services.
  */
 
@@ -20,13 +20,13 @@ try {
     $cartoCiudad = new CartoCiudadService();
     $municipios = new MunicipioService();
     $nombre = Request::texto('municipio');
-    $codine = Request::texto('codine');
+    $codine = Request::codigoINE('codine');
 
     if ($codine === null) {
         if ($nombre === null) {
             if (Request::texto('latitud') === null || Request::texto('longitud') === null) {
                 throw ApiException::peticionInvalida(
-                    "Faltan los parametros 'municipio' o 'latitud' y 'longitud'"
+                    "Faltan los parametros 'municipio', 'codine' o 'latitud' y 'longitud'"
                 );
             }
 

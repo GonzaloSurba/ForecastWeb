@@ -30,8 +30,8 @@ try {
     $tiempo = (new OpenWeatherService())->tiempo(
         $latitud,
         $longitud,
-        Request::textoConDefecto('lang', 'es'),
-        Request::textoConDefecto('units', 'metric')
+        Request::enum('lang', ['es', 'sp', 'pt', 'ca', 'eu', 'gl', 'en'], 'es'),
+        Request::enum('units', ['standard', 'metric', 'imperial'], 'metric')
     );
 
     ApiResponse::jsonCrudo($tiempo);

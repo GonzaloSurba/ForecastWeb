@@ -34,6 +34,11 @@ final class HttpClient {
             CURLOPT_TIMEOUT => self::TIMEOUT,
             CURLOPT_CONNECTTIMEOUT => self::TIMEOUT_CONEXION,
             CURLOPT_FOLLOWLOCATION => true,
+            // Solo http/https, tambien en las redirecciones: sin esto, una URL
+            // decidida por un tercero (p. ej. la de datos de AEMET) podria apuntar
+            // a file:// o gopher:// y leer ficheros locales (SSRF).
+            CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+            CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
             CURLOPT_HTTPHEADER => $cabeceras,
         ]);
 

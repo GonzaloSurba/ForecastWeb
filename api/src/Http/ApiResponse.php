@@ -55,5 +55,7 @@ final class ApiResponse {
     private static function cabecera(int $estado): void {
         http_response_code($estado);
         header('Content-Type: application/json; charset=utf-8');
+        header('X-Content-Type-Options: nosniff');
+        header('Referrer-Policy: no-referrer');
     }
 }
