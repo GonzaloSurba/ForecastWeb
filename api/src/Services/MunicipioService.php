@@ -11,7 +11,7 @@ use Generator;
  *
  *   config/MUNICIPIOS.csv     8133 municipios, separador ';', codificacion ISO-8859-15, contiene coordenadas
  *   config/diccionario26.csv  8133 municipios, separador ',', codificacion UTF-8
- *                             (columnas CPRO/CMUN, el codigo INE que espera AEMET)
+ *                             (columnas CPRO/CMUN, el código INE que espera AEMET)
  */
 final class MunicipioService {
 
@@ -28,7 +28,7 @@ final class MunicipioService {
     private const COL_LATITUD = 'LATITUD_ETRS89_REGCAN95';
     private const COL_LONGITUD = 'LONGITUD_ETRS89_REGCAN95';
 
-    /** Radio de busqueda aproximado, en grados (~5,5 km). */
+    /** Radio de búsqueda aproximado, en grados (~5,5 km). */
     private const RADIO_BUSQUEDA_GRADOS = 0.05;
 
     /**
@@ -47,7 +47,7 @@ final class MunicipioService {
      * Fila del diccionario26.csv para un nombre de municipio.
      *
      * @return array<string,string>
-     * @throws ApiException 404 si no hay ningun municipio con ese nombre.
+     * @throws ApiException 404 si no hay ningún municipio con ese nombre.
      */
     public function porNombre(string $nombre): array {
         $objetivo = self::normalizar($nombre);
@@ -62,7 +62,7 @@ final class MunicipioService {
     }
 
     /**
-     * Codigo INE de un municipio, concatenando CPRO y CMUN como espera AEMET
+     * Código INE de un municipio, concatenando CPRO y CMUN como espera AEMET
      * (por ejemplo '01' + '051' -> '01051').
      */
     public function codigoIne(string $nombre): string {
@@ -79,10 +79,10 @@ final class MunicipioService {
     }
 
     /**
-     * Fila del MUNICIPIOS.csv mas cercana a unas coordenadas, ya convertida a UTF-8.
+     * Fila del MUNICIPIOS.csv más cercana a unas coordenadas, ya convertida a UTF-8.
      *
      * @return array<string,string>
-     * @throws ApiException 404 si no hay ningun municipio en el radio de busqueda.
+     * @throws ApiException 404 si no hay ningún municipio en el radio de búsqueda.
      */
     public function porCoordenadas(float $latitud, float $longitud): array {
         $mejorDistancia = PHP_FLOAT_MAX;
@@ -112,7 +112,7 @@ final class MunicipioService {
     }
 
     /**
-     * Nombre actual del municipio mas cercano a unas coordenadas.
+     * Nombre actual del municipio más cercano a unas coordenadas.
      */
     public function nombrePorCoordenadas(float $latitud, float $longitud): string {
         $fila = $this->porCoordenadas($latitud, $longitud);
@@ -130,7 +130,7 @@ final class MunicipioService {
      * Fila del MUNICIPIOS.csv para un nombre de municipio, ya convertida a UTF-8.
      *
      * @return array<string,string>
-     * @throws ApiException 404 si no hay ningun municipio con ese nombre.
+     * @throws ApiException 404 si no hay ningún municipio con ese nombre.
      */
     public function coordenadasPorNombre(string $nombre): array {
         $objetivo = self::normalizar($nombre);
@@ -167,9 +167,9 @@ final class MunicipioService {
     }
 
     /**
-     * Recorre un CSV de municipios leyendo linea a linea, emparejando cada fila con su
+     * Recorre un CSV de municipios leyendo línea a línea, emparejando cada fila con su
      * encabezado. Valida que existan las columnas requeridas y descarta las filas con
-     * filas con un numero de campos distinto al encabezado.
+     * filas con un número de campos distinto al encabezado.
      *
      * @return Generator<int, array<string,string>>
      */

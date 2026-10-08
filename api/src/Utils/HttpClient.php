@@ -5,9 +5,7 @@ namespace App\Utils;
 use App\Exception\ApiException;
 
 /**
- * Cliente HTTP minimo sobre cURL. Antes cada endpoint montaba su propio curl_init()
- * sin timeout ni curl_close(), y hacia echo curl_error() sin exit, lo que producia
- * doble cuerpo de respuesta cuando fallaba la llamada.
+ * Cliente HTTP mínimo sobre cURL.
  */
 final class HttpClient {
 
@@ -18,7 +16,7 @@ final class HttpClient {
      * Realiza un GET y devuelve el cuerpo de la respuesta tal cual.
      *
      * @param string[] $cabeceras
-     * @param string|null $cainfo Ruta a un bundle CA propio para esta peticion,
+     * @param string|null $cainfo Ruta a un bundle CA propio para esta petición,
      *                            para servidores cuya cadena de certificados no
      *                            completa el store del sistema (p. ej. MITECO).
      */
@@ -34,8 +32,8 @@ final class HttpClient {
             CURLOPT_TIMEOUT => self::TIMEOUT,
             CURLOPT_CONNECTTIMEOUT => self::TIMEOUT_CONEXION,
             CURLOPT_FOLLOWLOCATION => true,
-            // Solo http/https, tambien en las redirecciones: sin esto, una URL
-            // decidida por un tercero (p. ej. la de datos de AEMET) podria apuntar
+            // Solo http/https, también en las redirecciones: sin esto, una URL
+            // decidida por un tercero (p. ej. la de datos de AEMET) podría apuntar
             // a file:// o gopher:// y leer ficheros locales (SSRF).
             CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
             CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
@@ -50,8 +48,6 @@ final class HttpClient {
         $codigoError = curl_errno($manejador);
         $descripcionError = curl_error($manejador);
 
-        curl_close($manejador);
-
         if ($codigoError !== 0 || $respuesta === false) {
             // El detalle va al log del servidor, nunca al cliente: curl_error()
             // incluye la URL, y en OpenWeather la URL lleva la API key.
@@ -63,7 +59,7 @@ final class HttpClient {
     }
 
     /**
-     * Decodifica un JSON asumiendo UTF-8 y devuelve null si el cuerpo no es JSON valido.
+     * Decodifica un JSON asumiendo UTF-8 y devuelve null si el cuerpo no es JSON válido.
      *
      * @return array<mixed>|null
      */

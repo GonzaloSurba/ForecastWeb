@@ -7,10 +7,10 @@
  *
  *   php tools/generar-zonas-meteoalerta.php [--cache=DIR]
  *
- * AEMET no publica ningun fichero con el reparto municipio -> zona, asi que la tabla
+ * AEMET no publica ningún fichero con el reparto municipio -> zona, así que la tabla
  * se extrae del PDF con pdftotext -layout. El layout de dos columnas del PDF no es
- * estable entre paginas, por eso en vez de fiarse de la posicion se comprueba que el
- * municipio encaje con la provincia de la seccion actual.
+ * estable entre páginas, por eso en vez de fiarse de la posición se comprueba que el
+ * municipio encaje con la provincia de la sección actual.
  */
 
 declare(strict_types=1);
@@ -18,12 +18,12 @@ declare(strict_types=1);
 const PDF_MUNICIPIOS = 'https://www.aemet.es/documentos/es/eltiempo/prediccion/avisos/plan_meteoalerta/detalle_municipios_zonas_meteorologicas.pdf';
 const PDF_ANEXO_2 = 'https://www.aemet.es/documentos/es/eltiempo/prediccion/avisos/plan_meteoalerta/METEOALERTA_ANEX2_Zonas_aviso.pdf';
 
-/** Numero de zonas del plan Meteoalerta vigente (Anexo 2, edicion de 31-05-2022). */
+/** Número de zonas del plan Meteoalerta vigente (Anexo 2, edición de 31-05-2022). */
 const TOTAL_ZONAS_ESPERADO = 182;
 
 /**
  * Provincias insulares. El PDF las numera con su propio esquema (6590 Gran Canaria,
- * 6453 Ibiza) en vez del codigo INE de provincia, asi que la comprobacion de
+ * 6453 Ibiza) en vez del código INE de provincia, así que la comprobación de
  * coherencia no se les puede aplicar.
  */
 const PROVINCIAS_INSULARES = ['07', '35', '38'];
@@ -63,21 +63,21 @@ echo 'Escrito ' . count($municipios) . ' filas en ' . realpath($ruta) . PHP_EOL;
  * Recorre el texto del PDF y devuelve el reparto municipio -> zona junto con el
  * nombre de cada zona.
  *
- * Cabecera de 4 digitos = CCAA + provincia o CCAA + isla, abre una seccion.
+ * Cabecera de 4 digitos = CCAA + provincia o CCAA + isla, abre una sección.
  * Cabecera de 6 digitos = zona, cierra la anterior.
- * 5 digitos = codigo INE de un municipio.
+ * 5 dígitos = código INE de un municipio.
  *
  * @return array{pares: array<string,string>, zonas: array<string,string>}
  */
 function analizar(string $texto): array {
-    // El salto de pagina de pdftotext llega como \f pegado al texto. Si se hiciera
-    // split por \n en su lugar, un codigo de la ultima linea de una pagina se
-    // pegaria al primero de la siguiente y ambos se leerian como uno solo.
+    // El salto de página de pdftotext llega como \f pegado al texto. Si se hiciera
+    // split por \n en su lugar, un código de la última línea de una página se
+    // pegaría al primero de la siguiente y ambos se leerían como uno solo.
     $lineas = explode("\n", str_replace("\f", '', $texto));
 
-    // \p{L} y no una lista de letras acentuadas: el PDF mezcla castellano y catalan,
-    // y si falta una letra en la lista (por ejemplo 'Ò' de Òrrius) el codigo de la
-    // derecha no se detecta y el nombre de la zona arrastra el resto de la linea.
+    // \p{L} y no una lista de letras acentuadas: el PDF mezcla castellano y catalán,
+    // y si falta una letra en la lista (por ejemplo 'Ò' de Òrrius) el código de la
+    // derecha no se detecta y el nombre de la zona arrastra el resto de la línea.
     $patron = '/\d{4,6}(?=\s+\p{L})/u';
 
     $provincia = null;
@@ -124,8 +124,8 @@ function analizar(string $texto): array {
 }
 
 /**
- * Un municipio pertenece a la seccion actual si sus dos primeros digitos son los de
- * la provincia, o si la seccion es insular.
+ * Un municipio pertenece a la sección actual si sus dos primeros dígitos son los de
+ * la provincia, o si la sección es insular.
  */
 function encaja(string $codigoMunicipio, string $provincia): bool {
     $provinciaIne = substr($provincia, 2, 2);
@@ -168,8 +168,8 @@ function validar(array $municipios, array $zonas, array $referencia): array {
         );
     }
 
-    // Si el extractor se deja un codigo sin ver, su texto se cuela en el nombre de la
-    // zona. Un nombre con digitos delata ese fallo antes de que llegue a la tabla.
+    // Si el extractor se deja un código sin ver, su texto se cuela en el nombre de la
+    // zona. Un nombre con dígitos delata ese fallo antes de que llegue a la tabla.
     foreach ($zonas as $codigo => $nombre) {
         if (preg_match('/\d/', $nombre) === 1) {
             $errores[] = sprintf('el nombre de la zona %s contiene digitos: "%s"', $codigo, $nombre);
@@ -195,8 +195,8 @@ function validar(array $municipios, array $zonas, array $referencia): array {
         }
     }
 
-    // Un PDF cambiado puede invalidar la tabla entera. En ese caso interesta saber que
-    // hay errores, no imprimirlos todos, asi que se acota la lista.
+    // Un cambio en la estructura del PDF puede generar un fallo masivo en la tabla. 
+    // En estos casos basta con notificar la presencia de errores, por lo que se limita la salida a los primeros 20.
     if (count($errores) > 20) {
         $total = count($errores);
         $errores = array_slice($errores, 0, 20);
@@ -207,7 +207,7 @@ function validar(array $municipios, array $zonas, array $referencia): array {
 }
 
 /**
- * Escribe el CSV final, ordenado por codigo INE para que las diferencias entre
+ * Escribe el CSV final, ordenado por código INE para que las diferencias entre
  * regeneraciones sean legibles.
  *
  * @param array<string,string> $municipios
@@ -235,7 +235,7 @@ function escribir(string $ruta, array $municipios, array $zonas): void {
     }
 }
 
-/** @return array<string,string> codigo INE de 5 digitos -> COD_PROV */
+/** @return array<string,string> código INE de 5 dígitos -> COD_PROV */
 function leerProvincias(): array {
     $manejador = fopen(RUTA_MUNICIPIOS, 'r');
 
@@ -276,7 +276,7 @@ function leerProvincias(): array {
 }
 
 /**
- * Codigos de zona del Anexo 2 vigente, para comprobar que la tabla no se ha
+ * Códigos de zona del Anexo 2 vigente, para comprobar que la tabla no se ha
  * desfasado respecto a la lista oficial.
  *
  * @return string[]
@@ -293,7 +293,7 @@ function leerZonasAnexo2(string $cache): array {
     return array_values(array_unique($coincidencias[0]));
 }
 
-/** Descarga el PDF si no esta ya en la cache y devuelve su ruta. */
+/** Descarga el PDF si no está ya en la caché y devuelve su ruta. */
 function descargar(string $url, string $cache): string {
     if (!is_dir($cache) && !mkdir($cache, 0o777, true) && !is_dir($cache)) {
         throw new RuntimeException("No se pudo crear la cache '$cache'");
@@ -320,7 +320,6 @@ function descargar(string $url, string $cache): string {
 
     $contenido = curl_exec($manejador);
     $error = curl_error($manejador);
-    curl_close($manejador);
 
     if (!is_string($contenido) || $contenido === '') {
         throw new RuntimeException("No se pudo descargar '$url': $error");

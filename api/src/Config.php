@@ -5,7 +5,7 @@ namespace App;
 use App\Exception\ApiException;
 
 /**
- * Acceso a la configuracion del .env.
+ * Acceso a la configuración del .env.
  */
 final class Config {
 

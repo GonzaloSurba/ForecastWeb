@@ -3,15 +3,15 @@
 namespace App\Http;
 
 /**
- * Control de acceso por origen. Solo pueden llamar a la API los origenes
+ * Control de acceso por origen. Solo pueden llamar a la API los orígenes
  * declarados: el frontend del propio proyecto en desarrollo (localhost) y los
  * que se añadan en la variable de entorno API_ORIGENES_PERMITIDOS.
  *
- * El navegador envia siempre Origin o Referer en las peticiones del frontend,
- * de modo que una pagina de otro sitio no puede usar la API desde el navegador
+ * El navegador envía siempre Origin o Referer en las peticiones del frontend,
+ * de modo que una página de otro sitio no puede usar la API desde el navegador
  * de un visitante (ni consumir la cuota de AEMET/OpenWeather). Un cliente sin
  * navegador (curl, scripts) puede forzar las cabeceras, pero esto no sustituye
- * a la autenticacion: protege el lado que no se puede esconder, el navegador.
+ * a la autenticación: protege el lado que no se puede esconder, el navegador.
  */
 final class Origen {
 

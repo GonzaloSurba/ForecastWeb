@@ -3,15 +3,15 @@
 namespace App\Http;
 
 /**
- * Limite de peticiones por IP con ventana deslizante, guardado en un fichero
- * temporal y protegido con flock para que aguante peticiones simultaneas.
+ * Límite de peticiones por IP con ventana deslizante, guardado en un fichero
+ * temporal y protegido con flock para que aguante peticiones simultáneas.
  *
  * La API hace llamadas caras a AEMET, OpenWeather y MITECO: sin este corte,
  * cualquier script puede agotar la cuota del proyecto en segundos.
  */
 final class RateLimiter {
 
-    /** Maximo de peticiones admitidas por IP en la ventana deslizante. */
+    /** Máximo de peticiones admitidas por IP en la ventana deslizante. */
     private const LIMITE = 30;
 
     /** Longitud de la ventana deslizante, en segundos. */
@@ -21,14 +21,14 @@ final class RateLimiter {
 
     private function __construct() {}
 
-    /** Responde 429 y termina si la IP ha superado el limite de la ventana. */
+    /** Responde 429 y termina si la IP ha superado el límite de la ventana. */
     public static function exigir(): void {
         $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? 'sin-ip');
         $ruta = sys_get_temp_dir() . '/' . self::PREFIJO_FICHERO . sha1($ip);
         $ahora = time();
 
         // Si el temporal no se puede abrir no se bloquea la API: perder el
-        // limite es preferible a dejar la web inutilizable.
+        // límite es preferible a dejar la web inutilizable.
         $manejador = @fopen($ruta, 'c+');
         if ($manejador === false) {
             return;

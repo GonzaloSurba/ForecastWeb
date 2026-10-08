@@ -5,14 +5,14 @@ namespace App\Http;
 use App\Exception\ApiException;
 
 /**
- * Lectura y validacion de los parametros de $_GET. Cada endpoint repite casi la misma
- * comprobacion de "municipio o coordenadas", asi que vive aqui una sola vez.
+ * Lectura y validación de los parámetros de $_GET. Cada endpoint repite casi la misma
+ * comprobación de "municipio o coordenadas", así que vive aquí una sola vez.
  */
 final class Request {
 
     private function __construct() {}
 
-    /** Parametro de texto no vacio, o null si no viene. */
+    /** Parámetro de texto no vacío, o null si no viene. */
     public static function texto(string $clave, int $maxLongitud = 100): ?string {
         if (!isset($_GET[$clave])) {
             return null;
@@ -36,7 +36,7 @@ final class Request {
         return self::texto($clave) ?? $defecto;
     }
 
-    /** Lanza ApiException 400 si el parametro no es un numero valido. */
+    /** Lanza ApiException 400 si el parámetro no es un número válido. */
     public static function numero(string $clave): float {
         $valor = self::texto($clave);
 
@@ -47,7 +47,7 @@ final class Request {
         return (float) $valor;
     }
 
-    /** Codigo INE de municipio (5 digitos), o null si no viene. 400 si viene mal formado. */
+    /** Código INE de municipio (5 digitos), o null si no viene. 400 si viene mal formado. */
     public static function codigoINE(string $clave): ?string {
         $valor = self::texto($clave);
 

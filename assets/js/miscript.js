@@ -95,7 +95,7 @@ function obtenerClimaActual(climaHoy) {
 function obtenerVientoActual(vientosHoy) {
     for (let viento of vientosHoy) {
         if (viento.periodo == horaActual && viento.direccion) {
-            // Si el viento no contiene el campo direccion significa que es es la racha máxima de esa hora
+            // Si el viento no contiene el campo dirección significa que es es la racha máxima de esa hora
             return viento
         }
     }
@@ -381,8 +381,8 @@ async function obtenerDatosTiempo({ municipio = null, latitud = null, longitud =
     
     mostrarDatosTiempo(datosTiempo["AEMET"], datosTiempo["OpenWeather"], avisosTiempo)
 
-    // El ICA depende de la posicion, no de AEMET: se pide con las coordenadas de
-    // OpenWeather si vienen y si no con el nombre, para que tambien funcione al
+    // El ICA depende de la posición, no de AEMET: se pide con las coordenadas de
+    // OpenWeather si vienen y si no con el nombre, para que también funcione al
     // geolocalizar o cuando OpenWeather falla.
     const ica = await getIcaData({
         municipio: municipio,
@@ -416,16 +416,21 @@ async function buscarMunicipiosYPoblaciones(municipio) {
 function mostrarDatosTiempo(datosAemet, datosOpenWeather = null, avisosTiempo = null) {
     let datos = datosAemet[0]
 
+    // Constantes tarjeta principal
     const iconoClimaActual = document.querySelector("#iconoClimaActual")
     const descripcionClimaActual = obtenerClimaActual(datos.prediccion.dia[0].estadoCielo)["descripcion"]
     const temperaturaActualElement = document.querySelectorAll(".temperaturaActual")
     const temperaturaActual = obtenerDatoActual(datos.prediccion.dia[0].temperatura)
+    // Constantes métricas actuales
     const temperaturaMin = document.querySelectorAll(".tempMin")
     const temperaturaMax = document.querySelectorAll(".tempMax")
     const temperaturasMaxMin = obtenerTemperaturaMaxMin(datos.prediccion.dia[0].temperatura, temperaturaActual)
     const horaAmanecer = datos.prediccion.dia[0].orto
     const horaAtardecer = datos.prediccion.dia[0].ocaso
+    // Constantes telemetría atmosférica
     const humedad = obtenerDatoActual(datos.prediccion.dia[0].humedadRelativa)
+    const humedadEsAlta = humedad > 50
+    const descripcionHumedadElement = document.querySelector(".descripcionHumedad")
     const viento = datos.prediccion.dia[0].vientoAndRachaMax
     const vientoActual = obtenerVientoActual(viento)
     const descripcionVientoElement = document.querySelectorAll(".descripcionViento")
@@ -470,7 +475,9 @@ function mostrarDatosTiempo(datosAemet, datosOpenWeather = null, avisosTiempo = 
     // Telemetría atmosférica
     document.querySelector("#humedadActual").textContent = `${humedad}%`
     document.querySelector(".gauge-ring").style.setProperty('--gauge-value', `${humedad}`);
-    document.querySelector(".descripcionHumedad").textContent = descripcionHumedad(humedad)
+    descripcionHumedadElement.classList.toggle("tag-superficie", humedadEsAlta)
+    descripcionHumedadElement.classList.toggle("tag-calida", !humedadEsAlta)
+    descripcionHumedadElement.textContent = descripcionHumedad(humedad)
     document.querySelector("#velocidadVientoActual").textContent = vientoActual["velocidad"][0]
     actualizarAgujaViento(vientoActual["direccion"][0])
     descripcionVientoElement.forEach((viento, i) => {
@@ -520,7 +527,7 @@ function mostrarDatosTiempo(datosAemet, datosOpenWeather = null, avisosTiempo = 
 
 }
 
-// Variantes de color del pill del ICA, alineadas con las categorias oficiales
+// Variantes de color del pill del ICA, alineadas con las categorías oficiales
 // de MITECO y con las clases de estilo.css.
 const VARIANTES_ICA = [
     "pill-ica-buena",
@@ -536,7 +543,7 @@ function mostrarIca(ica) {
     const pill = document.querySelector("#pillIca")
     if (!pill) return
 
-    // Sin estacion dentro del radio no hay nada que informar: se oculta el pill
+    // Sin estación dentro del radio no hay nada que informar: se oculta el pill
     // entero en vez de dejar en pantalla el ICA del municipio anterior.
     if (!ica) {
         pill.style.display = "none"
@@ -553,7 +560,7 @@ function mostrarIca(ica) {
     document.querySelector("#categoriaIca").textContent = ica.categoria
 
     // La fecha del CSV viene en UTC sin sufijo: se etiqueta como tal para no
-    // presentar la hora local del navegador como si fuera la de la medicion.
+    // presentar la hora local del navegador como si fuera la de la medición.
     const fechaMedicion = new Date(`${ica.fecha}Z`).toLocaleString("es-ES", {
         day: "2-digit",
         month: "2-digit",
@@ -622,8 +629,6 @@ function actualizarAgujaViento(direccionRecibida) {
     actualizarReloj();
     setInterval(actualizarReloj, 1000);
 
-    obtenerHorasLuz("08:19", "20:09")
-
     actualizarBusquedasRecientes()
 
     const modalInicio = document.querySelector("#modal-inicio")
@@ -655,6 +660,9 @@ function actualizarAgujaViento(direccionRecibida) {
     const geolocalizarButton = document.querySelector(".buscador-ubicacion-button")
     geolocalizarButton.addEventListener("click", getGeolocation)
 
+    const ultimoMunicipioBuscado = JSON.parse(localStorage.getItem("busquedas"))[0]
+    obtenerDatosTiempo({ municipio: ultimoMunicipioBuscado ?? "Zafra" })
+
     document.querySelector(".horaria-link").addEventListener("click", (e) => {
         e.preventDefault()
         if (!datosReporte) {
@@ -666,7 +674,7 @@ function actualizarAgujaViento(direccionRecibida) {
         const enlace = document.createElement("a")
         enlace.href = url
         // El nombre del municipio puede traer barras o caracteres que rompen el
-        // nombre del fichero: se deja solo letras, numeros, espacios y guiones.
+        // nombre del fichero: se deja solo letras, números, espacios y guiones.
         const municipioSeguro = (String(datosReporte.municipio ?? "municipio")
             .replace(/[^\p{L}\p{N} ]+/gu, "-")
             .replace(/^-+|-+$/g, "")

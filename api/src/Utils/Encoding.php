@@ -3,9 +3,9 @@
 namespace App\Utils;
 
 /**
- * Utilidades de codificacion de texto.
+ * Utilidades de codificación de texto.
  *
- * Los ficheros de configuracion del proyecto no comparten codificacion:
+ * Los ficheros de configuración del proyecto no comparten codificación:
  *   - config/MUNICIPIOS.csv      -> ISO-8859-15
  *   - config/diccionario26.csv   -> UTF-8
  * Por eso las conversiones se hacen siempre de forma condicional y nunca "a pelo".
@@ -17,7 +17,7 @@ final class Encoding {
     /**
      * AEMET mezcla codificaciones en la misma respuesta: el bloque "origen" viene en
      * ISO-8859-15 y el de datos en UTF-8. Convertir todo desde ISO rompe los acentos
-     * que ya venian en UTF-8, asi que solo convertimos los bytes sueltos.
+     * que ya venían en UTF-8, así que solo convertimos los bytes sueltos.
      */
     public static function aUtf8Mixtos(string $texto): string {
         $salida = '';
@@ -57,9 +57,9 @@ final class Encoding {
     }
 
     /**
-     * Convierte a UTF-8 solo si aun no lo es. Necesario porque un mismo
+     * Convierte a UTF-8 solo si aún no lo es. Necesario porque un mismo
      * proyecto consume un CSV en ISO-8859-15 y otro en UTF-8: convertir el que ya es
-     * UTF-8 desde ISO produciria texto basura.
+     * UTF-8 desde ISO produciría texto basura.
      */
     public static function aUtf8SiHaceFalta(string $texto): string {
         if (mb_check_encoding($texto, 'UTF-8')) {

@@ -8,27 +8,27 @@ use App\Utils\HttpClient;
 use Generator;
 
 /**
- * Indice de Calidad del Aire (ICA) de la estacion mas cercana a un punto.
+ * Índice de Calidad del Aire (ICA) de la estación más cercana a un punto.
  *
  * MITECO publica un CSV con las estaciones que miden el ICA, pero no todos los
- * municipios tienen estacion: se busca la mas cercana dentro de un radio (50 km)
+ * municipios tienen estación: se busca la más cercana dentro de un radio (50 km)
  * y, si no la hay, se devuelve null. Null no es un error, igual que en
- * ZonaMeteoalertaService: el dato simplemente no existe para esa ubicacion.
+ * ZonaMeteoalertaService: el dato simplemente no existe para esa ubicación.
  *
- * El fichero se actualiza cada hora, asi que se cachea en disco para no pedirlo
- * en cada busqueda.
+ * El fichero se actualiza cada hora, así que se cachea en disco para no pedirlo
+ * en cada búsqueda.
  */
 final class IcaService {
 
-    /** Radio maximo de busqueda de estacion, en kilometros. */
+    /** Radio máximo de búsqueda de estación, en kilómetros. */
     private const RADIO_KM = 50.0;
 
-    /** Los datos son horarios: 15 minutos de cache es mas que suficiente. */
+    /** Los datos son horarios: 15 minutos de caché es más que suficiente. */
     private const TTL_CACHE_SEGUNDOS = 900;
 
     private const RUTA_CACHE = '/webtiempo-ica.csv';
 
-    /** El servidor MITECO no envia su intermediate FNMT, hace falta bundle propio. */
+    /** El servidor MITECO no envía su intermediate FNMT, hace falta bundle propio. */
     private const CAINFO = __DIR__ . '/../../config/ca-ica.pem';
 
     private const COL_CODIGO = 'cod_estacion';
@@ -42,9 +42,9 @@ final class IcaService {
     private const COL_DEBIDO_A = 'debido_a';
 
     /**
-     * Categorias oficiales del ICA (Orden TEC/351/2019 y su actualizacion).
-     * El valor del indice es la categoria; cuando el dato esta calculado con
-     * menos contaminantes de los que mide la estacion, MITECO lo publica
+     * Categorías oficiales del ICA (Orden TEC/351/2019 y su actualización).
+     * El valor del índice es la categoría; cuando el dato esta calculado con
+     * menos contaminantes de los que mide la estación, MITECO lo publica
      * multiplicado por 10 (10, 20, ... 60).
      */
     private const CATEGORIAS = [
@@ -59,11 +59,11 @@ final class IcaService {
     public function __construct(private readonly HttpClient $http = new HttpClient()) {}
 
     /**
-     * Estacion activa con ICA mas cercana al punto, o null si no hay ninguna
-     * dentro del radio de busqueda.
+     * Estación activa con ICA más cercana al punto, o null si no hay ninguna
+     * dentro del radio de búsqueda.
      *
      * @return array<string,mixed>|null
-     * @throws ApiException 502 si MITECO no responde y no hay cache previa.
+     * @throws ApiException 502 si MITECO no responde y no hay caché previa.
      */
     public function estacionMasCercana(float $latitud, float $longitud): ?array {
         $csv = $this->csv();
@@ -97,11 +97,11 @@ final class IcaService {
     }
 
     /**
-     * El CSV descargado, cacheado en disco. Si MITECO falla pero hay una cache
+     * El CSV descargado, cacheado en disco. Si MITECO falla pero hay una caché
      * caducada, se usa esta: un dato de hace media hora sigue siendo utilizable
-     * y evita que el ICA desaparezca de la pagina por un corta encajado.
+     * y evita que el ICA desaparezca de la página por un corta encajado.
      *
-     * @throws ApiException 502 si no hay ni descarga ni cache.
+     * @throws ApiException 502 si no hay ni descarga ni caché.
      */
     private function csv(): string {
         $rutaCache = sys_get_temp_dir() . self::RUTA_CACHE;
@@ -123,7 +123,7 @@ final class IcaService {
             throw ApiException::errorExterno('No se pudo descargar el indice de calidad del aire');
         }
 
-        // Antes de guardar, compruebo que es el CSV y no una pagina de error:
+        // Antes de guardar, compruebo que es el CSV y no una página de error:
         // lo que se cachea mal se mantiene mal hasta que caduque.
         if (!str_contains(substr($csv, 0, 64), self::COL_CODIGO)) {
             throw ApiException::errorExterno('MITECO ha devuelto un fichero inesperado');
@@ -132,7 +132,7 @@ final class IcaService {
         $temporal = $rutaCache . '.' . getmypid();
 
         if (@file_put_contents($temporal, $csv) !== false) {
-            // rename es atomico: nunca se lee un fichero a medias.
+            // rename es atómico: nunca se lee un fichero a medias.
             if (!@rename($temporal, $rutaCache)) {
                 @unlink($temporal);
             }
@@ -142,7 +142,7 @@ final class IcaService {
     }
 
     /**
-     * Filas validas del CSV: las inactivas o sin indice no sirven para informar.
+     * Filas válidas del CSV: las inactivas o sin índice no sirven para informar.
      *
      * @return Generator<int,array<string,string>>
      */
@@ -186,7 +186,7 @@ final class IcaService {
     }
 
     /**
-     * Distancia entre dos puntos en kilometros (haversine).
+     * Distancia entre dos puntos en kilómetros (haversine).
      */
     private static function distanciaKm(float $lat1, float $lon1, float $lat2, float $lon2): float {
         $radioTierra = 6371.0;
@@ -220,7 +220,7 @@ final class IcaService {
             'parcial' => $parcial,
             'debido_a' => trim($fila[self::COL_DEBIDO_A]) ?: null,
             'fecha' => $fila[self::COL_FECHA],
-            // String, no float: el serialize_precision=100 del php.ini expandiria
+            // String, no float: el serialize_precision=100 del php.ini expandiría
             // 3.7 a 3.7000000000000001776... en el JSON.
             'distancia_km' => number_format($distancia, 1, '.', ''),
         ];

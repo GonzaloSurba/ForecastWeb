@@ -12,7 +12,7 @@ async function pedirDatos(url, { avisar = true } = {}) {
     });
 
     // El cuerpo se lee tanto si la respuesta es correcta como si no: el backend
-    // devuelve los errores con su propio codigo HTTP y el mensaje va en el JSON.
+    // devuelve los errores con su propio código HTTP y el mensaje va en el JSON.
     let datos = null
     try {
         datos = await response.json()
@@ -38,8 +38,8 @@ async function getOpenWeatherData(municipio, latitud, longitud) {
             ? `municipio=${encodeURIComponent(municipio)}`
             : `latitud=${encodeURIComponent(latitud)}&longitud=${encodeURIComponent(longitud)}`
 
-        // No se avisa de los fallos aqui: OpenWeather es un dato complementario y un
-        // fallo suyo no debe interrumpir la prediccion de AEMET, que ya se ha pintado.
+        // No se avisa de los fallos aquí: OpenWeather es un dato complementario y un
+        // fallo suyo no debe interrumpir la predicción de AEMET, que ya se ha pintado.
         return await pedirDatos(`api/getClimaMunicipioOpenWeather.php?${parametros}`, { avisar: false })
     } catch (error) {
         console.error("Se ha producido un error al obtener el tiempo:", error.message)
@@ -116,7 +116,7 @@ export async function getMunicipios(municipio) {
 }
 
 /**
- * ICA de la estacion meteorologica más cercana. Devuelve null si no hay estación
+ * ICA de la estación meteorológica más cercana. Devuelve null si no hay estación
  * en el radio o si el servicio falla, y no avisa: es un dato complementario y su
  * ausencia no debe interrumpir la predicción que ya se ha pintado.
  *

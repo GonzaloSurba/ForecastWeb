@@ -7,12 +7,12 @@ use App\Exception\ApiException;
 /**
  * Zona Meteoalerta en la que cae un municipio.
  *
- * AEMET no publica ningun fichero con el reparto municipio -> zona, asi que la tabla
+ * AEMET no publica ningún fichero con el reparto municipio -> zona, así que la tabla
  * de config/zonas_meteoalerta.csv se genera con tools/generar-zonas-meteoalerta.php a
  * partir del PDF oficial y se sube al repo ya generada.
  *
- * El codigo de zona son 6 digitos y sus dos primeros son el codigo de CCAA que AEMET
- * usa en la URL de sus avisos ('70' -> Extremadura). De ahi se saca la CCAA sin
+ * El código de zona son 6 dígitos y sus dos primeros son el código de CCAA que AEMET
+ * usa en la URL de sus avisos ('70' -> Extremadura). De ahí se saca la CCAA sin
  * necesitar una tabla adicional.
  */
 final class ZonaMeteoalertaService {
@@ -25,7 +25,7 @@ final class ZonaMeteoalertaService {
     private const COL_NOMBRE = 'NOM_Z';
 
     /**
-     * Tabla indexada por codigo INE, cargada en la primera consulta.
+     * Tabla indexada por código INE, cargada en la primera consulta.
      *
      * @var array<string,array{codigo:string,nombre:string}>|null
      */
@@ -36,11 +36,11 @@ final class ZonaMeteoalertaService {
     /**
      * Zona Meteoalerta de un municipio, o null si la tabla no lo cubre.
      *
-     * Null es a proposito y no un error: la tabla no incluye todos los municipios. El
+     * Null es a propósito y no un error: la tabla no incluye todos los municipios. El
      * PDF oficial numera las islas con su propio esquema ('6590' Gran Canaria, '6453'
-     * Ibiza) en vez del codigo INE de provincia y las coloca en dos columnas con
+     * Ibiza) en vez del código INE de provincia y las coloca en dos columnas con
      * zonas distintas, que no se pueden separar de forma fiable. Baleares y Canarias
-     * quedan fuera hasta que la tabla se genere por otra via.
+     * quedan fuera hasta que la tabla se genere por otra vía.
      *
      * @return array{codigo:string,nombre:string}|null
      */
@@ -52,7 +52,7 @@ final class ZonaMeteoalertaService {
         return $this->zonas()[substr($codigoIne, 0, 5)] ?? null;
     }
 
-    /** Codigo de CCAA de una zona, que es lo que espera el RSS de AEMET. */
+    /** Código de CCAA de una zona, que es lo que espera el RSS de AEMET. */
     public static function ccaaDe(string $codigoZona): string {
         return substr($codigoZona, 0, 2);
     }

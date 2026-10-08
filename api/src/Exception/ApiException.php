@@ -5,7 +5,7 @@ namespace App\Exception;
 use RuntimeException;
 
 /**
- * Error controlado del backend. Cada instancia lleva consigo el codigo HTTP con el que
+ * Error controlado del backend. Cada instancia lleva consigo el código HTTP con el que
  * debe responder el endpoint, de forma que los endpoints no tengan que decidirlo.
  */
 class ApiException extends RuntimeException {
@@ -18,7 +18,7 @@ class ApiException extends RuntimeException {
         return $this->estadoHttp;
     }
 
-    /** Faltan parametros o son invalidos. */
+    /** Faltan parámetros o son inválidos. */
     public static function peticionInvalida(string $mensaje): self {
         return new self($mensaje, 400);
     }
