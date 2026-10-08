@@ -373,54 +373,56 @@ async function obtenerDatosTiempo({ municipio = null, latitud = null, longitud =
     cargando = true
     cargandoPagina()
 
-    const desplegable = document.querySelector(".buscador-input-dropdown-content")
-    desplegable.style.display = "none"
+    try {
+        const desplegable = document.querySelector(".buscador-input-dropdown-content")
+        desplegable.style.display = "none"
 
-    if (localStorage.getItem("busquedas") && municipio) {
-        let busquedas = JSON.parse(localStorage.getItem("busquedas"))
-        busquedas = busquedas.filter(m => m != municipio)
-        busquedas.unshift(municipio)
-        if (busquedas.length > 5) {
-            busquedas.pop()
+        if (localStorage.getItem("busquedas") && municipio) {
+            let busquedas = JSON.parse(localStorage.getItem("busquedas"))
+            busquedas = busquedas.filter(m => m != municipio)
+            busquedas.unshift(municipio)
+            if (busquedas.length > 5) {
+                busquedas.pop()
+            }
+            localStorage.setItem("busquedas", JSON.stringify(busquedas))
+        } else if (municipio) {
+            let busquedas = []
+            busquedas.unshift(municipio)
+            localStorage.setItem("busquedas", JSON.stringify(busquedas))
         }
-        localStorage.setItem("busquedas", JSON.stringify(busquedas))
-    } else if (municipio) {
-        let busquedas = []
-        busquedas.unshift(municipio)
-        localStorage.setItem("busquedas", JSON.stringify(busquedas))
+
+        actualizarBusquedasRecientes()
+
+        const datosTiempo = await getAemetData({ municipio: municipioPrincipal ?? municipio, latitud: latitud, longitud: longitud, codigoINE: codigoINE })
+        if (!datosTiempo) return
+
+        const avisosTiempo = await getAvisosData({ municipio: municipioPrincipal ?? municipio, latitud: latitud, longitud: longitud, codigoINE: codigoINE })
+        
+        mostrarDatosTiempo(datosTiempo["AEMET"], datosTiempo["OpenWeather"], avisosTiempo)
+
+        // El ICA depende de la posición, no de AEMET: se pide con las coordenadas de
+        // OpenWeather si vienen y si no con el nombre, para que también funcione al
+        // geolocalizar o cuando OpenWeather falla.
+        const ica = await getIcaData({
+            municipio: municipio,
+            latitud: datosTiempo["OpenWeather"]?.coord?.lat ?? latitud,
+            longitud: datosTiempo["OpenWeather"]?.coord?.lon ?? longitud,
+        })
+        mostrarIca(ica)
+
+        datosReporte = {
+            fechaExportacion: new Date().toISOString(),
+            municipio: municipioPrincipal ?? municipio,
+            latitud, longitud,
+            AEMET: datosTiempo["AEMET"],
+            OpenWeather: datosTiempo["OpenWeather"],
+            avisos: avisosTiempo,
+            ica,
+        }
+    } finally {
+        cargando = false
+        cargandoPagina()
     }
-
-    actualizarBusquedasRecientes()
-
-    const datosTiempo = await getAemetData({ municipio: municipioPrincipal ?? municipio, latitud: latitud, longitud: longitud, codigoINE: codigoINE })
-    if (!datosTiempo) return
-
-    const avisosTiempo = await getAvisosData({ municipio: municipioPrincipal ?? municipio, latitud: latitud, longitud: longitud, codigoINE: codigoINE })
-    
-    mostrarDatosTiempo(datosTiempo["AEMET"], datosTiempo["OpenWeather"], avisosTiempo)
-
-    // El ICA depende de la posición, no de AEMET: se pide con las coordenadas de
-    // OpenWeather si vienen y si no con el nombre, para que también funcione al
-    // geolocalizar o cuando OpenWeather falla.
-    const ica = await getIcaData({
-        municipio: municipio,
-        latitud: datosTiempo["OpenWeather"]?.coord?.lat ?? latitud,
-        longitud: datosTiempo["OpenWeather"]?.coord?.lon ?? longitud,
-    })
-    mostrarIca(ica)
-
-    datosReporte = {
-        fechaExportacion: new Date().toISOString(),
-        municipio: municipioPrincipal ?? municipio,
-        latitud, longitud,
-        AEMET: datosTiempo["AEMET"],
-        OpenWeather: datosTiempo["OpenWeather"],
-        avisos: avisosTiempo,
-        ica,
-    }
-
-    cargando = false
-    cargandoPagina()
 }
 
 async function buscarMunicipiosYPoblaciones(municipio) {
@@ -680,7 +682,7 @@ function actualizarAgujaViento(direccionRecibida) {
     const geolocalizarButton = document.querySelector(".buscador-ubicacion-button")
     geolocalizarButton.addEventListener("click", getGeolocation)
 
-    const ultimoMunicipioBuscado = JSON.parse(localStorage.getItem("busquedas"))[0]
+    const ultimoMunicipioBuscado = JSON.parse(localStorage.getItem("busquedas"))?.[0]
     obtenerDatosTiempo({ municipio: ultimoMunicipioBuscado ?? "Zafra" })
 
     document.querySelector(".horaria-link").addEventListener("click", (e) => {
