@@ -211,10 +211,24 @@ button {
     cursor: pointer;
 }
 
+a {
+    text-decoration: none;
+    color: var(--color-primary);
+    cursor: pointer;
+}
+
 *,
 *::before,
 *::after {
     box-sizing: border-box;
+}
+
+.oculto {
+    display: none !important;
+}
+
+main.cargando > section:not(:first-child) {
+    visibility: hidden !important;
 }
 
 /* ================================================================
@@ -625,7 +639,6 @@ nav {
         padding-inline: var(--space-md);
         padding-block: 0.375rem;
         border-radius: var(--radius-full);
-        text-decoration: none;
         transition: background-color 0.2s ease;
         color: var(--color-on-surface-variant);
     }
@@ -783,12 +796,17 @@ nav {
     display: block;
     padding: 10px;
     color: #333;
-    text-decoration: none;
-    cursor: pointer;
 }
 
 .buscador-input-dropdown-content a:hover {
     background-color: #f1f1f1;
+}
+
+.buscador-api {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+    padding-top: var(--space-md);
 }
 
 .buscador-frecuentes {
@@ -1360,11 +1378,6 @@ footer {
     img {
         height: 1.5rem;
     }
-
-    a {
-        text-decoration: none;
-        color: inherit;
-    }
 }
 
 @media (min-width: 768px) {
@@ -1426,7 +1439,6 @@ footer {
         border-radius: var(--radius-full);
         padding: var(--space-md) var(--space-sm);
         transition: background-color 0.2s ease;
-        cursor: pointer;
         width: 70%;
     }
 

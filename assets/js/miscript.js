@@ -2,7 +2,17 @@ import { getAemetData, getAvisosData, getIcaData, getMunicipios } from "./api.js
 import { cargarRadar } from "./radar.js";
 
 const horaActual = new Date().getHours()
+
+const main = document.querySelector("main")
+const loaderContainer = document.querySelector(".loader-container")
+let cargando = true
+
 let datosReporte = null
+
+function cargandoPagina() {
+    main.classList.toggle("cargando", cargando)
+    loaderContainer.classList.toggle("oculto", !cargando)
+}
 
 function calcularFecha(fecha) {
     const fechaObjetivo = new Date(fecha);
@@ -285,6 +295,7 @@ function actualizarBusquedasRecientes() {
         return
     }
 
+    const fragmento = new DocumentFragment()
     for (let municipio of listaBusquedas) {
         const botonMunicipioFrecuente = document.createElement("button")
         botonMunicipioFrecuente.textContent = municipio
@@ -292,9 +303,10 @@ function actualizarBusquedasRecientes() {
             e.preventDefault()
             obtenerDatosTiempo({ municipio: municipio })
         })
-        listaFrecuentes.append(botonMunicipioFrecuente)
+        fragmento.append(botonMunicipioFrecuente)
     }
 
+    listaFrecuentes.append(fragmento)
     listaFrecuentes.style.display = "flex"
 }
 
@@ -307,6 +319,7 @@ function getGeolocation() {
             alert("No se ha podido obtener su localización")
             return
         }
+        document.querySelector("#municipio").value = ""
         obtenerDatosTiempo({ latitud: latitud, longitud: longitud })
     })
 }
@@ -334,6 +347,7 @@ function mostrarResultados(resultados) {
         }
     })
 
+    const fragmento = new DocumentFragment()
     const listResultados = Array.from(resultadosUnicos.values())
     for (let resultado of listResultados) {
         const nombreMunicipio = resultado["poblacion"] ?? resultado["muni"]
@@ -343,9 +357,10 @@ function mostrarResultados(resultados) {
             e.preventDefault()
             obtenerDatosTiempo({ municipio: nombreMunicipio, codigoINE: resultado["muniCode"], municipioPrincipal: resultado["muni"] })
         })
-        desplegable.append(sugerencia)
+        fragmento.append(sugerencia)
     }
 
+    desplegable.append(fragmento)
     desplegable.style.display = "block"
 }
 
@@ -354,6 +369,9 @@ async function obtenerDatosTiempo({ municipio = null, latitud = null, longitud =
         alert("Debes introducir un nombre, codigo INE o usar tu ubicación para buscar el tiempo de un municipio")
         return
     }
+
+    cargando = true
+    cargandoPagina()
 
     const desplegable = document.querySelector(".buscador-input-dropdown-content")
     desplegable.style.display = "none"
@@ -400,6 +418,9 @@ async function obtenerDatosTiempo({ municipio = null, latitud = null, longitud =
         avisos: avisosTiempo,
         ica,
     }
+
+    cargando = false
+    cargandoPagina()
 }
 
 async function buscarMunicipiosYPoblaciones(municipio) {
@@ -524,7 +545,6 @@ function mostrarDatosTiempo(datosAemet, datosOpenWeather = null, avisosTiempo = 
         clon.querySelector(".slot-viento").textContent = `${tiempo["viento"]["velocidad"]} km/h`
         padre.append(clon)
     }
-
 }
 
 // Variantes de color del pill del ICA, alineadas con las categorías oficiales

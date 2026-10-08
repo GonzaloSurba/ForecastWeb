@@ -1,10 +1,23 @@
 /* HTML: <div class="loader"></div> */
+.loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: opacity 0.3s ease;
+}
+
 .loader {
-    width: 50px;
+    width: 100px;
     aspect-ratio: 1;
     border-radius: 50%;
-    border: 8px solid lightblue;
-    border-right-color: orange;
+    border: 16px solid var(--color-primary-fixed);
+    border-right-color: var(--color-primary);
     animation: l2 1s infinite linear;
 }
 
