@@ -696,7 +696,7 @@ nav {
     width: 100%;
     border-radius: var(--radius-full);
     background-color: var(--color-on-primary);
-    padding: 0.375rem; /* 16px */
+    padding: 0.375rem;
     box-shadow: 0 8px 30px rgb(0,0,0,0.04);
 
     i.bi-search {
@@ -1020,7 +1020,7 @@ nav {
 
 /*  
     Pill del ICA.
-    El color de cada categoria es el oficial de MITECO y se aplica al punto y al
+    El color de cada categoría es el oficial de MITECO y se aplica al punto y al
     fondo; el texto va oscurecido porque los colores oficiales no tienen contraste
     suficiente sobre blanco (el amarillo de "Regular" sería ilegible).
 */

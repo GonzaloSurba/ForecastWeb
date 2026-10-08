@@ -63,8 +63,8 @@ echo 'Escrito ' . count($municipios) . ' filas en ' . realpath($ruta) . PHP_EOL;
  * Recorre el texto del PDF y devuelve el reparto municipio -> zona junto con el
  * nombre de cada zona.
  *
- * Cabecera de 4 digitos = CCAA + provincia o CCAA + isla, abre una sección.
- * Cabecera de 6 digitos = zona, cierra la anterior.
+ * Cabecera de 4 dígitos = CCAA + provincia o CCAA + isla, abre una sección.
+ * Cabecera de 6 dígitos = zona, cierra la anterior.
  * 5 dígitos = código INE de un municipio.
  *
  * @return array{pares: array<string,string>, zonas: array<string,string>}

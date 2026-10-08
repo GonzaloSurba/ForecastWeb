@@ -43,7 +43,7 @@ La API REST está escrita a mano deliberadamente: sin framework, cada endpoint e
 │       └── radar.js         Mapa Leaflet, radar de lluvia y recorte
 └── api/
     ├── .htaccess            Bloquea src/, vendor/, tools/, config/ y composer.*
-    ├── get*.php             Endpoints GET (fina, sin lógica de negocio)
+    ├── get*.php             Endpoints GET (sin lógica de negocio)
     ├── config/              CSVs (municipios INE, zonas Meteoalerta, ICA)
     ├── src/
     │   ├── bootstrap.php    Autoload + .env + seguridad transversal

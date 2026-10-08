@@ -82,7 +82,7 @@ function obtenerHorasLuz(amanecer, atardecer) {
     let diferenciaMinutos = minutosAmanecer - minutosAtardecer;
 
     // Manejo el caso si el rango pasa de la medianoche (ej. de 23:00 a 01:00)
-    // En España esto no ocurre pero por si se pudieran ver el tiempo de otros paises en el futuro
+    // En España esto no ocurre, pero por si se pudiera ver el tiempo de otros países en el futuro
     if (diferenciaMinutos < 0) {
         diferenciaMinutos += 24 * 60; 
     }
@@ -105,7 +105,7 @@ function obtenerClimaActual(climaHoy) {
 function obtenerVientoActual(vientosHoy) {
     for (let viento of vientosHoy) {
         if (viento.periodo == horaActual && viento.direccion) {
-            // Si el viento no contiene el campo dirección significa que es es la racha máxima de esa hora
+            // Si el viento no contiene el campo dirección significa que es la racha máxima de esa hora
             return viento
         }
     }
@@ -366,7 +366,7 @@ function mostrarResultados(resultados) {
 
 async function obtenerDatosTiempo({ municipio = null, latitud = null, longitud = null, codigoINE = null, municipioPrincipal = null }) {
     if (!municipio && !codigoINE && (!latitud || !longitud)) {
-        alert("Debes introducir un nombre, codigo INE o usar tu ubicación para buscar el tiempo de un municipio")
+        alert("Debes introducir un nombre, código INE o usar tu ubicación para buscar el tiempo de un municipio")
         return
     }
 
