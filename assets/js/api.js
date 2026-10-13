@@ -3,6 +3,8 @@
  * eso lo hace miscript.js.
  */
 
+import { mostrarAviso } from "./avisos.js";
+
 async function pedirDatos(url, { avisar = true } = {}) {
     const response = await fetch(url, {
         method: "GET",
@@ -24,7 +26,7 @@ async function pedirDatos(url, { avisar = true } = {}) {
         const mensaje = datos?.error
             ?? `el servidor respondió ${response.status} ${response.statusText}`
         if (avisar) {
-            alert("Se ha producido un error: " + mensaje)
+            mostrarAviso("Se ha producido un error: " + mensaje, { titulo: "Error" })
         }
         return null
     }
@@ -84,7 +86,7 @@ export async function getAemetData({ municipio = null, latitud = null, longitud 
     } else if (latitud && longitud) {
         url = `api/getClimaMunicipioAemet.php?latitud=${encodeURIComponent(latitud)}&longitud=${encodeURIComponent(longitud)}`
     } else {
-        alert("Para buscar un municipio introduce su nombre o geolocaliza tu posición")
+        mostrarAviso("Para buscar un municipio introduce su nombre o geolocaliza tu posición")
         return
     }
 

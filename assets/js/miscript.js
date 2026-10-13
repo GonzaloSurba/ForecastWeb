@@ -1,5 +1,6 @@
 import { getAemetData, getAvisosData, getIcaData, getMunicipios } from "./api.js";
 import { cargarRadar } from "./radar.js";
+import { mostrarAviso } from "./avisos.js";
 
 const horaActual = new Date().getHours()
 
@@ -316,7 +317,7 @@ function getGeolocation() {
         let { latitude: latitud, longitude: longitud } = position.coords;
         console.log(`Latitud: ${latitud}, Longitud: ${longitud}`)
         if (!latitud || !longitud) {
-            alert("No se ha podido obtener su localización")
+            mostrarAviso("No se ha podido obtener su localización", { titulo: "Error" })
             return
         }
         document.querySelector("#municipio").value = ""
@@ -366,7 +367,7 @@ function mostrarResultados(resultados) {
 
 async function obtenerDatosTiempo({ municipio = null, latitud = null, longitud = null, codigoINE = null, municipioPrincipal = null }) {
     if (!municipio && !codigoINE && (!latitud || !longitud)) {
-        alert("Debes introducir un nombre, código INE o usar tu ubicación para buscar el tiempo de un municipio")
+        mostrarAviso("Debes introducir un nombre, código INE o usar tu ubicación para buscar el tiempo de un municipio", { titulo: "Error" })
         return
     }
 
@@ -673,7 +674,7 @@ function actualizarAgujaViento(direccionRecibida) {
         e.preventDefault()
         let municipioABuscar = document.querySelector("#municipio").value
         if (!municipioABuscar) {
-            alert("Debes introducir un municipio")
+            mostrarAviso("Debes introducir un municipio")
             return
         }
         buscarMunicipiosYPoblaciones(municipioABuscar)
@@ -688,7 +689,7 @@ function actualizarAgujaViento(direccionRecibida) {
     document.querySelector(".horaria-link").addEventListener("click", (e) => {
         e.preventDefault()
         if (!datosReporte) {
-            alert("Primero busca un municipio para exportar el reporte")
+            mostrarAviso("Primero busca un municipio para exportar el reporte")
             return
         }
         const blob = new Blob([JSON.stringify(datosReporte, null, 2)], { type: "application/json" })

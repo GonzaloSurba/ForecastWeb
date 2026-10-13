@@ -1391,7 +1391,7 @@ footer {
 }
 
 /* Modal de avisos */
-#modal-inicio {
+.dialog-modal {
     background-color: var(--color-surface-container-lowest);
     border-radius: 1.5rem;
     width: 95%;
@@ -1400,11 +1400,11 @@ footer {
     box-shadow: 0 16px 40px rgba(0, 97, 148, 0.06);
 }
 
-#modal-inicio:active {
+.dialog-modal:active {
     border: none;
 }
 
-.modal-inicio-container {
+.modal-container {
     width: 100%;
     padding: var(--space-md);
     display: flex;
@@ -1413,7 +1413,7 @@ footer {
     gap: var(--space-lg);
 }
 
-.modal-inicio-title {
+.modal-title {
     display: flex;
     justify-content: center;
 
@@ -1423,11 +1423,11 @@ footer {
     }
 }
 
-.modal-inicio-content p {
+.modal-content p {
     text-align: justify;
 }
 
-.modal-inicio-end {
+.modal-end {
 
     width: 100%;
     display: flex;

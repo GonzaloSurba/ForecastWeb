@@ -515,12 +515,12 @@
         </div>
     </template>
 
-    <dialog id="modal-inicio">
-        <div class="modal-inicio-container">
-            <div class="modal-inicio-title">
+    <dialog class="dialog-modal" id="modal-inicio">
+        <div class="modal-container">
+            <div class="modal-title">
                 <h3 class="headline-sm">Aviso:</h3>
             </div>
-            <div class="modal-inicio-content">
+            <div class="modal-content">
                 <p class="body-lg">
                     Esta web es un proyecto creado para <a href="https://gonzalosurba.github.io/portfolio/" target="_blank">mi porfolio</a>.
                     Si bien muestra datos reales de los municipios, puede contener errores e inexactitudes.
@@ -528,8 +528,24 @@
                     dedicadas a la información meteorológica.
                 </p>
             </div>
-            <div class="modal-inicio-end">
+            <div class="modal-end">
                 <button id="modal-inicio-cerrar">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog class="dialog-modal" id="modal-aviso">
+        <div class="modal-container">
+            <div class="modal-title">
+                <h3 class="headline-sm" id="modal-aviso-titulo">Aviso:</h3>
+            </div>
+            <div class="modal-content">
+                <p class="body-lg" id="modal-aviso-mensaje"></p>
+            </div>
+            <div class="modal-end">
+                <button id="modal-aviso-cerrar">
                     Cerrar
                 </button>
             </div>
